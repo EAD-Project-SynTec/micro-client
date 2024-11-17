@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import SortBar from './components/SortBar'
 import LoadingProducts from './courier/components/LoadingProducts'
-import { getSortedProducts, getUnsortedProducts } from './services/productServices'
+import { getSortedProducts, getUnsortedProducts,getSearchProducts } from './services/productServices'
 import { set } from 'date-fns'
 
 const useQuery = () => {
@@ -83,13 +83,15 @@ const ProductList = () => {
               return(    
                 <ProductsCard
                   key={key}
-                  productID={product.productID}
-                  productTitle={product.productTitle}
-                  productImageUrl={product.productImageUrl}
-                  minimumQuantity={product.minimumQuantity}
-                  availableStock={product.availableStock}
-                  unitPrice={product.unitPrice}
+                  productID={product.id}
+                  productTitle={product.name}
+                  productImageUrl={product.imageUrl}
+                  minimumQuantity={5}
+                  availableStock={10}
+                  unitPrice={product.price}
                  />
+
+                // <h2>{product.imageUrl}</h2>
               );
             },
             ):

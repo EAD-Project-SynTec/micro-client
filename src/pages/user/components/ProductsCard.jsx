@@ -13,7 +13,7 @@ const ProductsCard = (props) => {
         <div className="relative bg-white rounded-2xl dark:bg-gray-700">
           <div className="px-3 pt-3">
             <img
-              src={"https://syntecblobstorage.blob.core.windows.net/products/" + props.productImageUrl} alt={props.productTitle} 
+              src={props.productImageUrl} alt="product"
               className="object-cover w-[190px]  h-[150px] rounded-lg"
             />
           </div>
@@ -28,9 +28,9 @@ const ProductsCard = (props) => {
             <div className=' my-3'>
               <h1 className='text-lg font-semibold text-gray-800'>{props.productTitle}</h1>
             </div>
-            <div className='flex justify-between text-gray-800'>
+            {/* <div className='flex justify-between text-gray-800'>
               <p className='flex items-center gap-2 text-sm'><FaWeight />{props.minimumQuantity}kg - {props.availableStock}kg</p>
-            </div>
+            </div> */}
             <div className='flex justify-start mt-6'>
               <h1 className='text-primary text-xl'>Rs.{props.unitPrice.toFixed(2)}</h1>
             </div>

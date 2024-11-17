@@ -58,7 +58,7 @@ export const updateProductImage = async (id, file) => {
 // Function to get sorted products
 export const getSortedProducts = async (sortOrder) => {
     try {
-        const response = await axiosInstance.get(`/product/sorted?sortOrder=${sortOrder}`);
+        const response = await axiosInstance.get(`/product/sort?order=${sortOrder}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching sorted products:', error);
@@ -80,7 +80,7 @@ export const getSearchProducts = async (searchData) => {
 // Function to get unsorted products
 export const getUnsortedProducts = async () => {
     try {
-      const response = await axiosInstance.get('/product');
+      const response = await axiosInstance.get(`product?user=customer`);
       return response.data;
     } catch (error) {
       console.error('Error fetching products:', error);

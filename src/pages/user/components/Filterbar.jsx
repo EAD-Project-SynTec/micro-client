@@ -7,11 +7,16 @@ const Filterbar = ({ items, applyFilters }) => {
 
   // Function to apply filters and pass filtered data to parent component
   const handleApplyFilters = () => {
+    console.log("---------------------------------------")
     let filteredData = items;
+    console.log(filteredData)
     if (selectedCategory) {
+      console.log(selectedCategory)
       filteredData = filteredData.filter(product => product.category === selectedCategory);
+      console.log(filteredData)
     }
     applyFilters(filteredData);
+    
   };
 
   // Handle category change
@@ -46,7 +51,7 @@ const Filterbar = ({ items, applyFilters }) => {
           {/* Apply filters button */}
           <button
             type='button'
-            className=" mt-8 bg-primary w-full rounded-md text-white py-2 text-sm hover:bg-green-500"
+  className="mt-8 bg-green-500 w-full rounded-md text-white py-2 text-sm hover:bg-green-600"
             onClick={handleApplyFilters}
           >
             Apply Filters

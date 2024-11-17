@@ -69,7 +69,7 @@ export const getSortedProducts = async (sortOrder) => {
 //function to get search items
 export const getSearchProducts = async (searchData) => {
   try {
-      const response = await axiosInstance.get(`Product/search?searchTerm=${searchData}`);
+      const response = await axiosInstance.get(`product/search?name=${searchData}`);
       return response.data;
   } catch (error) {
       console.error('Error fetching sorted products:', error);

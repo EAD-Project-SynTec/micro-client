@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import SortBar from './components/SortBar'
 import LoadingProducts from './courier/components/LoadingProducts'
-import { getSortedProducts, getUnsortedProducts,getSearchProducts } from './services/productServices'
+import { getSortedProducts, getUnsortedProducts, getSearchProducts } from './services/productServices'
 import { set } from 'date-fns'
 
 const useQuery = () => {
@@ -71,16 +71,15 @@ const ProductList = () => {
   };
   return (
     <div>
-      <MainNav  getSearchResults={handleSearchData}/>
+      <MainNav getSearchResults={handleSearchData}/>
       <SortBar handleSortedData={handleSortedData}/>
       <div className='grid grid-cols-5'>
-       <Filterbar items={products} applyFilters={applyFilters} />
-        <div className=' col-span-4 overflow-y-auto flex flex-wrap py-4  px-4 gap-4  bg-secondary min-h-screen'>
-          
-          {filteredProducts.length>0 ?
-          filteredProducts.map((product,index) => {
-              const key=product.productID || index
-              return(    
+        <Filterbar items={products} applyFilters={applyFilters} />
+        <div className='col-span-4 overflow-y-auto flex flex-wrap py-4 px-4 gap-4 min-h-screen' style={{ backgroundColor: '#f5f7fa' }}>
+          {filteredProducts.length > 0 ?
+            filteredProducts.map((product, index) => {
+              const key = product.productID || index;
+              return (
                 <ProductsCard
                   key={key}
                   productID={product.id}
@@ -89,20 +88,14 @@ const ProductList = () => {
                   minimumQuantity={5}
                   availableStock={10}
                   unitPrice={product.price}
-                 />
-
-                // <h2>{product.imageUrl}</h2>
+                />
               );
-            },
-            ):
-            <LoadingProducts/>
-            }
+            }) :
+            <LoadingProducts />
+          }
         </div>
-       
       </div>
-
     </div>
-
   )
 }
 

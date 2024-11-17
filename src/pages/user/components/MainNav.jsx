@@ -88,10 +88,6 @@ const MainNav = ({ getSearchResults }) => {
                   <ListItem NavLink="/buyers/my-orders">My Orders</ListItem>
                   <ListItem NavLink="/#">Offers</ListItem>
                 </ul>
-                <ul className="flex  justify-end  text-primary text-sm">
-                  <ListItem NavLink="/dashboard/my-products"><BsCoin size={24} className=" mx-2" />Become a Seller</ListItem>
-                  <ListItem NavLink="/couriers/new-orders"><TbTruckDelivery size={25} className=" mx-2" />Delivery Partner</ListItem>
-                </ul>
               </div>
             </div>
             <div>
@@ -116,13 +112,13 @@ const MainNav = ({ getSearchResults }) => {
                       :
                       <>
                         <div className="flex gap-3">
-                          <Link to={"/login"} className='bg-transparent border-primary border rounded-full inline-flex items-center 
-                                        justify-center py-2 px-8 text-center text-sm font-medium  text-primary
+                          <Link to={"/login"} className='bg-transparent border-green-500 border rounded-full inline-flex items-center 
+                                        justify-center py-2 px-8 text-center text-sm font-medium  text-green-500
                                         disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'>
                             Login
                           </Link>
                         
-                          <Link to={"/create"} className='bg-primary border-primary border w-full rounded-full inline-flex items-center 
+                          <Link to={"/create"} className='bg-green-500 border-primary border w-full rounded-full inline-flex items-center 
                                         justify-center py-2 px-7 text-center text-sm font-medium   text-white hover:bg-primary/90
                                         disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'>
                             SignUp

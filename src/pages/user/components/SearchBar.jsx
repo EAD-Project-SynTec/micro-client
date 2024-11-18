@@ -1,14 +1,23 @@
 import { getSearchProducts } from "@/services/productServices";
 import { useState } from "react";
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const SearchBar = ({ onSearch ,isInProductPage }) => {
+const SearchBar = ({ onSearch, isInProductPage }) => {
   const [searchData, setSearchData] = useState('');
-  const history = useNavigate();
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
+    console.log("--------------------------")
+    console.log(searchData)
     e.preventDefault();
-    onSearch(searchData);
-    history.push(`/products?search=${searchData}`);
+    if (typeof onSearch === 'function') {
+      onSearch(searchData);
+    } else {
+      console.error("onSearch is not a function");
+    }
+    console.log('here')
+    navigate(`/products?search=${searchData}`);
   };
 
   return (
@@ -53,5 +62,14 @@ const SearchBar = ({ onSearch ,isInProductPage }) => {
     </form>
   );
 }
+
+SearchBar.propTypes = {
+  onSearch: PropTypes.func,
+  isInProductPage: PropTypes.bool,
+};
+
+SearchBar.defaultProps = {
+  onSearch: () => {},
+};
 
 export default SearchBar;

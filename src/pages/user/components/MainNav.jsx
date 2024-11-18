@@ -35,6 +35,7 @@ const MainNav = ({ getSearchResults }) => {
 
   const handleSearch = async (searchTerm) => {
     try {
+      console.log()
       // Fetch search results
       navigate(`/products?search=${searchTerm}`);
       const results = await getSearchProducts(searchTerm);

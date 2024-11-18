@@ -3,9 +3,9 @@ import { SpinnerColors } from '../../components/Spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { MdOutlineErrorOutline } from "react-icons/md";
-//  import AuthService from '../../services/apiService.js';
-// import { jwtDecode } from 'jwt-decode';
-// import ConfirmEmailAlert from '@/user/components/ConfirmEmailAlert';
+import AuthService from '../../services/apiService.js';
+ import { jwtDecode } from 'jwt-decode';
+ import ConfirmEmailAlert from '@/pages/user/components/ConfirmEmailAlert';
 
 function Login(){
     const [visibility, setVisibility]=useState(false);
@@ -20,77 +20,79 @@ function Login(){
     
     // Function for handle login -----------------------
 
-    // const handleLogin = async (e) => {
-    //     e.preventDefault();
-    //     const data = {
-    //         email: emailRef.current.value,
-    //         password: passwordRef.current.value
-    //     };
-    //     try{
-    //         setIsLoading(true);
-    //         setVerifyMsg(false);
-    //         const response = await AuthService.login(data);
-    //         console.log("Server response: ", response);
-    //         sessionStorage.setItem('jwtToken', response.accessToken);
-    //         setLogError(false);
-    //         const token = sessionStorage.getItem('jwtToken');
-    //         const decodedData = jwtDecode(token);
-    //         console.log(decodedData.email)
-    //         console.log(decodedData.role)
-    //         setIsLoading(false);
-    //         if(decodedData.role=="Courier"){
-    //             navigate('/couriers/new-orders');
-    //         }
-    //         if(decodedData.role=="Farmer"){
-    //             navigate('/dashboard/my-products');
-    //         }
-    //         if(decodedData.role=="User"){
-    //             navigate('/dashboard/my-products');
-    //         }
-    //     }
-    //     catch (error){
-    //         setIsLoading(false);
-    //         if(error=="Not verified"){
-    //             setErrorMsg("Your email is not verified. Click the verification link sent to your email to veirfy. ");
-    //             setVerifyMsg(true);
-    //         }
-    //         if(error=="Not approved"){
-    //             setErrorMsg("Your account has not yet been approved. Thank you for your patience.");
-    //         }
-    //         if(error=="Email or password is incorrect"){
-    //             setErrorMsg("Email or password is incorrect");
-    //         }
-    //         setLogError(true);
-    //         console.error("Error: ", error);
-    //     }
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        const data = {
+            email: emailRef.current.value,
+            password: passwordRef.current.value
+        };
+        console.log(data);
+        try{
+            setIsLoading(true);
+            setVerifyMsg(false);
+            const response = await AuthService.login(data);
+            console.log("Server response: ", response);
+            sessionStorage.setItem('jwtToken', response);
+            setLogError(false);
+            const token = sessionStorage.getItem('jwtToken');
+            const decodedData = jwtDecode(token);
+            console.log(decodedData.email)
+            console.log(decodedData.resource_access.EADclient.roles[0])
+            setIsLoading(false);
+            console.log("Role: ", decodedData.resource_access.EADclient.roles[0]);
+            if(decodedData.resource_access.EADclient.roles[0]=="courier"){
+                navigate('/couriers/new-orders');
+            }
+            if(decodedData.resource_access.EADclient.roles[0]=="seller"){
+                navigate('/dashboard/my-products');
+            }
+            if(decodedData.resource_access.EADclient.roles[0]=="buyer"){
+                navigate('/dashboard/my-products');
+            }
+        }
+        catch (error){
+            setIsLoading(false);
+            if(error=="Not verified"){
+                setErrorMsg("Your email is not verified. Click the verification link sent to your email to veirfy. ");
+                setVerifyMsg(true);
+            }
+            if(error=="Not approved"){
+                setErrorMsg("Your account has not yet been approved. Thank you for your patience.");
+            }
+            if(error=="Email or password is incorrect"){
+                setErrorMsg("Email or password is incorrect");
+            }
+            setLogError(true);
+            console.error("Error: ", error);
+        }
         
-    // }
+    }
 
     // Email function for verify account ---------------------
 
-    // const sendEmailLink = async(e) => {
-    //     e.preventDefault();
-    //     setIsSentLinkDisable(true);
-    //     setTimeout(() => {
-    //         setIsSentLinkDisable(false);
-    //     }, 60000); //Waiting 1 minute ------------
-    //     const data ={
-    //         Email:emailRef.current.value
-    //     }
+    const sendEmailLink = async(e) => {
+        e.preventDefault();
+        setIsSentLinkDisable(true);
+        setTimeout(() => {
+            setIsSentLinkDisable(false);
+        }, 60000); //Waiting 1 minute ------------
+        const data ={
+            Email:emailRef.current.value
+        }
         
-    //     try{
-    //         setIsLoading(true);
-    //         const response = await AuthService.verifyLink(data);
-    //         console.log(response);
-    //         setIsLoading(false);
-    //         ConfirmEmailAlert({message:"Verification email has sent your email. Please check the inbox" , iconType:"success"});
-    //     }
-    //     catch(error){
-    //         setIsLoading(false);
-    //         setIsSentLinkDisable(false);
-    //         console.error("Error: ", error);
-    //     }
-    // }
+        try{
+            setIsLoading(true);
+            const response = await AuthService.verifyLink(data);
+            console.log(response);
+            setIsLoading(false);
+            ConfirmEmailAlert({message:"Verification email has sent your email. Please check the inbox" , iconType:"success"});
+        }
+        catch(error){
+            setIsLoading(false);
+            setIsSentLinkDisable(false);
+            console.error("Error: ", error);
+        }
+    }
     return(
         <>
             {isLoading && <SpinnerColors/>}
@@ -138,7 +140,7 @@ function Login(){
                                         className="w-full px-4 py-3 mt-6 font-semibold text-gray-200 bg-primary rounded-lg hover:text-gray-700 hover:bg-green-300 "
                                         type="submit" onClick={handleLogin}>LOGIN</button>
                                     <p className="mt-6 text-gray-700 dark:text-gray-300"> Need an account?
-                                        <Link className="font-semibold text-primary hover:text-green-800" to={"/create"}> Create an account</Link>
+                                        <Link className="font-semibold text-primary hover:text-green-800" to={"/signup"}> Create an account</Link>
                                     </p>
                                 </form>
                             </div>

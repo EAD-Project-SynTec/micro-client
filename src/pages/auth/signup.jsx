@@ -2,10 +2,10 @@ import React, { useRef, useState } from 'react';
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineErrorOutline } from "react-icons/md";
 import FormLabel from '../../components/FormLabel';
-// import { SpinnerColors } from '../../components/Spinner';
-// import AuthService from '../../services/apiService.js';
-// import ConfirmAlert from '@/user/components/ConfirmAlert.jsx';
-// import ErrorAlert from '@/user/components/ErrorAlert.jsx';
+import { SpinnerColors } from '../../components/Spinner';
+import AuthService from '../../services/apiService.js';
+import ConfirmAlert from '@/pages/user/components/ConfirmEmailAlert';
+ import ErrorAlert from '@/pages/user/components/ErrorAlert.jsx';
 
 
 export default function signup() {
@@ -20,7 +20,7 @@ export default function signup() {
   const [profileImg, setprofileImg]=useState(null);
   const fnameRef=useRef(null);
   const lnameRef=useRef(null);
-  const usernameRef=useRef(null);
+  const roleRef = useRef();
   const emailRef=useRef(null);
   const pwdRef=useRef(null);
   const nicRef=useRef(null);
@@ -67,67 +67,66 @@ export default function signup() {
 
   // Function for handle form submission ------------------------
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-//     if (pwd.length < 8) {
-//         ErrorAlert({ message: "Password minimum length should be 8 characters" });
-//         return;
-//     }
-//     if (pwd!=confmpwd) {
-//         ErrorAlert({ message: "Please make sure your passwords are match" });
-//         return;
-//     }
-//     if (!isnicValid) {
-//         ErrorAlert({ message: "Please enter valid NIC number" });
-//         return;
-//     }
-//     if (!isPhoneNumberValid) {
-//         ErrorAlert({ message: "Please enter valid phone number" });
-//         return;
-//     }
-//     if (profileImg==null) {
-//         ErrorAlert({ message: "Please upload a profile photo" });
-//         return;
-//     }
+    if (pwd.length < 8) {
+        ErrorAlert({ message: "Password minimum length should be 8 characters" });
+        return;
+    }
+    if (pwd!=confmpwd) {
+        ErrorAlert({ message: "Please make sure your passwords are match" });
+        return;
+    }
+    if (!isnicValid) {
+        ErrorAlert({ message: "Please enter valid NIC number" });
+        return;
+    }
+    if (!isPhoneNumberValid) {
+        ErrorAlert({ message: "Please enter valid phone number" });
+        return;
+    }
+    if (profileImg==null) {
+        ErrorAlert({ message: "Please upload a profile photo" });
+        return;
+    }
 
-//     var formData = {
-//         username: usernameRef.current.value,
-//         password: pwdRef.current.value,
-//         First_Name: fnameRef.current.value,
-//         Last_Name: lnameRef.current.value,
-//         Email: emailRef.current.value,
-//         Phone: phoneRef.current.value,
-//         NICNumber: nicRef.current.value,
-//         AddressLine1: add1Ref.current.value,
-//         AddressLine2: add2Ref.current.value,
-//         AddressLine3: add3Ref.current.value,
-//         profilepic: profileImg
-//     }
-//     console.log(formData);
+    const formData = new FormData();
+    formData.append('role', roleRef.current.value);
+    formData.append('password', pwdRef.current.value);
+    formData.append('firstName', fnameRef.current.value);
+    formData.append('lastName', lnameRef.current.value);
+    formData.append('email', emailRef.current.value);
+    formData.append('phoneNumber', phoneRef.current.value);
+    formData.append('addressLine1', add1Ref.current.value);
+    formData.append('addressLine2', add2Ref.current.value);
+    formData.append('addressLine3', add3Ref.current.value);
+    formData.append('profilePhoto', profileImg); // Append the file object
+    
+    console.log(formData);
 
-//     try {
-//         setIsLoading(true);
-//         const registerResponse = await AuthService.userRegister(formData);
-//         setIsLoading(false);
-//         await ConfirmAlert({message:"User account has been created"});
-//         window.location.reload();
-//         console.log('Server Response:', registerResponse);
+    try {
+        setIsLoading(true);
+        const registerResponse = await AuthService.Registeration(formData);
+        setIsLoading(false);
+        await ConfirmAlert({message:"User account has been created"});
+        window.location.reload();
+        console.log('Server Response:', registerResponse);
         
-//     } catch (error) {
-//         setIsLoading(false);
-//         console.error('Error:', error);
-//         if (error === "Email exist") {
-//             ErrorAlert({ message: "Error: Email already exists and you cannot register with an existing email address" });
-//         }
-//     }
-//   };
+    } catch (error) {
+        setIsLoading(false);
+        console.error('Error:', error);
+        if (error === "Email exist") {
+            ErrorAlert({ message: "Error: Email already exists and you cannot register with an existing email address" });
+        }
+    }
+  };
 
   return (
     <>
-        {/* {isLoading && <SpinnerColors/>} */}
+        {isLoading && <SpinnerColors/>}
       <form className="py-16 bg-gray-100 dark:bg-gray-800" 
-    //   onSubmit={handleSubmit}
+      onSubmit={handleSubmit}
       >
         <div className="max-w-6xl px-4 mx-auto">
             <div className="p-6 bg-white border border-gray-100 rounded-lg shadow dark:bg-gray-900 dark:border-gray-900">
@@ -156,18 +155,7 @@ export default function signup() {
                         </div>
                     </div>
                 </div>
-                <div className="py-6 border-b border-gray-100 dark:border-gray-800">
-                    <div className="w-full md:w-9/12">
-                        <div className="flex flex-wrap -m-3">
-                            <FormLabel>User name</FormLabel>
-                            <div className="w-full p-3 md:flex-1">
-                                <input
-                                    className="w-full px-4 py-2.5 dark:bg-gray-800 dark:border-gray-800 dark:placeholder-gray-500 dark:text-gray-400  text-base text-gray-900 rounded-lg font-normal border border-gray-200"
-                                    type="text" placeholder="username" required ref={usernameRef}/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <div className="py-6 border-b border-gray-100 dark:border-gray-800">
                     <div className="w-full md:w-9/12">
                         <div className="flex flex-wrap -m-3">
@@ -261,6 +249,27 @@ export default function signup() {
                         </div>
                     </div>
                 </div>
+                 
+                <div className="py-6 border-b border-gray-100 dark:border-gray-800">
+                    <div className="w-full md:w-9/12">
+                        <div className="flex flex-wrap -m-3">
+                            <FormLabel>Select Who are you</FormLabel>
+                            <div className="w-full p-3 md:flex-1">
+        <select
+          className="w-full px-4 py-2.5 dark:bg-gray-800 dark:border-gray-800 dark:placeholder-gray-500 dark:text-gray-400 text-base text-gray-900 rounded-lg font-normal border border-gray-200"
+          required
+          ref={roleRef}
+        >
+          <option value="">Select your role</option>
+          <option value="buyer">buyer</option>
+          <option value="courier">courier</option>
+        </select>
+      </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div className="py-6 border-b border-gray-100 dark:border-gray-800">
                     <div className="w-full md:w-9/12">
                         <div className="flex flex-wrap -m-3">

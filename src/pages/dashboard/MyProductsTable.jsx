@@ -7,9 +7,9 @@ import { HiTrash } from "react-icons/hi2";
 import moment from 'moment';
 import Swal from 'sweetalert2'
 import { Card, CardHeader, Typography, Button, CardBody, CardFooter, Avatar, IconButton, Tooltip, } from "@material-tailwind/react";
-// import { deleteProduct, getProductsBySellerID, getProductsBySellerIDPage } from '@/services/productServices';
+import { deleteProduct, getProductsBySellerID, getProductsBySellerIDPage,getProducts } from '@/services/productServices';
 import { jwtDecode } from 'jwt-decode';
-const TABLE_HEAD = ["Product", "Product Number", "Date Created", "Unit Price", "Stock", "Minimum Order", "", ""];
+const TABLE_HEAD = ["Product", "Product Number", "Category", "Unit Price", "Stock", "Popularity Order", "", ""];
 
 const MyProductsTable = () => {
   const navigate = useNavigate();
@@ -42,44 +42,41 @@ const MyProductsTable = () => {
       }
     });
   }
-// //   const fetchProducts = async (pageNum) => {
-// //     const token = sessionStorage.getItem('jwtToken');
-// //     const decodedData = jwtDecode(token);
-// //     const sellerID = decodedData.email;
-// //     try {
-// //       const productData = await getProductsBySellerIDPage(sellerID, pageNum, pageSize);
-// //       setProducts(productData.items);
-// //       console.log(productData);
-// //       setTotalPages(productData.totalPages);
-// //     } catch (error) {
-// //       console.error('Error fetching cart details:', error);
-// //     }
-// //   };
-//   //handle page increase
-//   const handlePageIncrease = () => {
-//     if (page >= totalPages) {
-//       return;
-//     }
-//     setPage(page + 1);
-//     fetchProducts(page + 1);
-//   }
+  const fetchProducts = async (pageNum) => {
+    try {
+      const productData = await getProducts();
+      setProducts(productData);
+      console.log(productData);
+      setTotalPages(productData.totalPages);
+    } catch (error) {
+      console.error('Error fetching cart details:', error);
+    }
+  };
+  // //handle page increase
+  // const handlePageIncrease = () => {
+  //   if (page >= totalPages) {
+  //     return;
+  //   }
+  //   setPage(page + 1);
+  //   fetchProducts(page + 1);
+  // }
 
-//   //handle page decrease
-//   const handlePageDecrease = () => {
-//     if (page <= 1) {
-//       return;
-//     }
-//     setPage(page - 1);
-//     fetchProducts(page - 1);
-//   };
-//   //delete product
-// //   const deleteConfirmHandler = async (productId) => {
-// //     const result = await deleteProduct(productId);
-// //     fetchProducts(page);
-// //   }
-//   useEffect(() => {
-//     fetchProducts(page);
-//   }, []);
+  // //handle page decrease
+  // const handlePageDecrease = () => {
+  //   if (page <= 1) {
+  //     return;
+  //   }
+  //   setPage(page - 1);
+  //   fetchProducts(page - 1);
+  // };
+  //delete product
+  const deleteConfirmHandler = async (productId) => {
+    const result = await deleteProduct(productId);
+    fetchProducts(page);
+  }
+  useEffect(() => {
+    fetchProducts(page);
+  }, []);
   return (
     <div>
 
@@ -111,9 +108,9 @@ const MyProductsTable = () => {
           <table className="mt-4 w-full min-w-max table-auto text-left">
             <thead>
               <tr>
-                {TABLE_HEAD.map((head) => (
+                {TABLE_HEAD.map((head,index) => (
                   <th
-                    key={head}
+                    key={index}
                     className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
                   >
                     <Typography
@@ -128,29 +125,25 @@ const MyProductsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((p, index) => {
-                const key = p.productID || index;
-                const dateTimeString = p.dateCreated;
-                const date = moment(dateTimeString).format("YYYY-MM-DD")
-                return (
-                  <tr key={key}>
+            {products.map((product, index)  =>  (
+                  <tr key={index}>
                     <td className="p-4 border-b border-blue-gray-50">
                       <div className="flex items-center gap-3">
-                        <Avatar src={"https://syntecblobstorage.blob.core.windows.net/products/" + p.productImageUrl} alt={p.productTitle} size="sm" />
+                        <Avatar src={product.imageUrl} alt={product.name} size="sm" />
                         <div className="flex flex-col">
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {p.productTitle}
+                            {product.name}
                           </Typography>
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal opacity-70"
                           >
-                            {`${p.productDescription.split(' ').slice(0, 3).join(' ')}...`}
+                            {`${product.description.split(' ').slice(0, 3).join(' ')}...`}
                           </Typography>
                         </div>
                       </div>
@@ -163,7 +156,7 @@ const MyProductsTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {"PO-" + 1000 + p.productID}
+                          {"PO-" + 1000 + product.id}
                         </Typography>
                       </div>
                     </td>
@@ -174,7 +167,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {date}
+                        {product.category}
                       </Typography>
                     </td>
 
@@ -184,7 +177,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {p.unitPrice.toFixed(2)}
+                        {product.price.toFixed(2)}
                       </Typography>
                     </td>
 
@@ -194,7 +187,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {p.availableStock}
+                        {product.quantity}
                       </Typography>
                     </td>
 
@@ -204,7 +197,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {p.minimumQuantity}
+                        {product.popularity}
                       </Typography>
                     </td>
 
@@ -212,7 +205,7 @@ const MyProductsTable = () => {
                     <td className="p-4 border-b border-blue-gray-50">
                       <Tooltip content="Edit Product">
                         <IconButton variant="text"
-                          onClick={() => navigate(`/dashboard/update-product/${p.productID}`)}
+                          onClick={() => navigate(`/dashboard/update-product/${product.id}`)}
                         >
                           <PencilIcon className="h-4 w-4"
                           />
@@ -222,7 +215,7 @@ const MyProductsTable = () => {
                     <td className="p-4 border-b border-blue-gray-50">
                       <Tooltip content="Delete Product">
                         <IconButton variant="text" color='red'
-                          onClick={() => PopupHandler(p.productID)}
+                          onClick={() => PopupHandler(product.id)}
                         >
                           <HiTrash className="h-4 w-4"
                           />
@@ -230,29 +223,28 @@ const MyProductsTable = () => {
                       </Tooltip>
                     </td>
                   </tr>
-                );
-              },
-              )}
+                
+              ))}
             </tbody>
           </table>
         </CardBody>
-        <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
+        {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
           <Typography variant="small" color="blue-gray" className="font-normal">
             Page {page} of {totalPages}
           </Typography>
           <div className="flex gap-2">
             <Button variant="outlined" size="sm"
-            //  onClick={handlePageDecrease}
+             onClick={handlePageDecrease}
              >
               Previous
             </Button>
             <Button variant="outlined" size="sm" 
-            // onClick={handlePageIncrease}
+            onClick={handlePageIncrease}
             >
               Next
             </Button>
           </div>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
 
     </div>

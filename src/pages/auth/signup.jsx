@@ -91,23 +91,24 @@ export default function signup() {
         return;
     }
 
-    const formData = new FormData();
-    formData.append('role', roleRef.current.value);
-    formData.append('password', pwdRef.current.value);
-    formData.append('firstName', fnameRef.current.value);
-    formData.append('lastName', lnameRef.current.value);
-    formData.append('email', emailRef.current.value);
-    formData.append('phoneNumber', phoneRef.current.value);
-    formData.append('addressLine1', add1Ref.current.value);
-    formData.append('addressLine2', add2Ref.current.value);
-    formData.append('addressLine3', add3Ref.current.value);
-    formData.append('profilePhoto', profileImg); // Append the file object
-    
+    var formData = {
+        role: roleRef.current.value,
+        password: pwdRef.current.value,
+        firstName: fnameRef.current.value,
+        lastName: lnameRef.current.value,
+        email: emailRef.current.value,
+        phoneNumber: phoneRef.current.value,
+        // NICNumber: nicRef.current.value,
+        addressLine1: add1Ref.current.value,
+        addressLine2: add2Ref.current.value,
+        addressLine3: add3Ref.current.value,
+        profilePhoto: "pic"
+    }
     console.log(formData);
 
     try {
         setIsLoading(true);
-        const registerResponse = await AuthService.Registeration(formData);
+        const registerResponse = await AuthService.Registration(formData);
         setIsLoading(false);
         await ConfirmAlert({message:"User account has been created"});
         window.location.reload();
@@ -349,12 +350,12 @@ export default function signup() {
                 <div className="flex pt-6 flex-wrap -m-1.5">
                     <div className="w-full md:w-auto p-1.5">
                         <input type='reset' value="Clear"
-                            className="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium hover:cursor-pointer text-gray-500 bg-white border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-100 active:shadow-xl active:ring-2 active:ring-gray-300" onClick={()=>setprofileImg(null)}>
+                            className="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium hover:cursor-pointer text-black-200 bg-gray-200 border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-300 active:shadow-xl active:ring-2 active:ring-gray-300" onClick={()=>setprofileImg(null)}>
                         </input>
                     </div>
                     <div className="w-full md:w-auto p-1.5">
                         <input type='submit' value={isLoading==false?"Sign In":"Signing..."}
-                            className="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-white bg-primary border border-primary rounded-md hover:bg-green-800 active:ring-2 active:ring-green-800 active:shadow-xl disabled:cursor-not-allowed" disabled={isLoading}>
+                            className="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-white bg-green-500 border border-primary rounded-md hover:bg-green-800 active:ring-2 active:ring-green-800 active:shadow-xl disabled:cursor-not-allowed" disabled={isLoading}>
                         </input>
                     </div>
                 </div>

@@ -32,11 +32,11 @@ api.interceptors.request.use(
 
   
 const AuthService = {
-  Registeration: async (formData) => {
+  Registration: async (formData) => {
     try {
       const response = await axios.post(`${BASE_URL}/api/auth/signup`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       return response.data;

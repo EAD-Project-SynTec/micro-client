@@ -15,10 +15,9 @@ const MyOrders = () => {
   const TABLE_HEAD = [
     "Product ID",
     "Quantity",
-    "Price",
+    "Unit Price",
     "Order Reference",
     "Order Placed",
-    "Status",
   ];
 
   const [data, setData] = useState([]);
@@ -47,7 +46,42 @@ const MyOrders = () => {
       });
   };
 
+  useEffect(() => {
+    if (location.pathname === "/my-orders") {
+      setTab(tab);
+    }
+  }, [location.pathname, tab]);
+
+  // Filter data based on tab selection
+  useEffect(() => {
+    const filterResult = (statusItem) => {
+      let result = [];
+      if (statusItem === "All") {
+        result = data; // No filter applied for "All"
+      } else if (statusItem === "delivered") {
+        result = data.filter(
+          (item) => item.status?.toLowerCase() === "delivered"
+        );
+      } else {
+        result = data.filter(
+          (item) => item.status?.toLowerCase() === statusItem.toLowerCase()
+        );
+      }
+      console.log("Filtered result:", result); // Debugging log
+      setFilteredData(result);
+    };
   
+    filterResult(tab);
+  }, [data, tab]);
+  
+
+  const handleRowClick = (id) => {
+    navigate(`/dashboard/my-orders/${id}`);
+  };
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div>
@@ -66,14 +100,14 @@ const MyOrders = () => {
               <Button onClick={() => {}}>Add Order</Button>
             </div>
           </div>
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
             <div className="w-full md:w-72">
               <Input
                 label="Search"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
               />
             </div>
-          </div>
+          </div> */}
         </CardHeader>
         <CardBody className="overflow-scroll px-0">
           {error ? (
@@ -81,6 +115,55 @@ const MyOrders = () => {
               {error}
             </Typography>
           ) : (
+              <div>
+                      <div className="flex sm:justify-end justify-center sm:mr-16 mr-0 text-custom-gray font-medium">
+                        <div className="flex sm:text-sm text-xs border-b-2 p-5">
+                          <button
+                            onClick={() => setTab("All")}
+                            className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
+                              tab === "All"
+                                ? "text-blue-500 font-bold border-b-2 border-blue-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            All
+                          </button>
+
+                          <button
+                            onClick={() => setTab("Ready to pickup")}
+                            className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
+                              tab === "Ready to pickup"
+                                ? "text-blue-500 font-bold border-b-2 border-blue-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            Ready to pickup
+                          </button>
+
+                          <button
+                            onClick={() => setTab("Picked up")}
+                            className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
+                              tab === "Picked up"
+                                ? "text-blue-500 font-bold border-b-2 border-blue-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            Picked up
+                          </button>
+
+                          <button
+                            onClick={() => setTab("Delivered")}
+                            className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
+                              tab === "Delivered"
+                                ? "text-blue-500 font-bold border-b-2 border-blue-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            Delivered
+                          </button>
+                        </div>
+                      </div>
+
             <table className="w-full min-w-max table-auto text-left">
               <thead>
                 <tr>
@@ -102,7 +185,7 @@ const MyOrders = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((order) => {
+                {filteredData.map((order) => {
                   // Iterate over the items array for each order
                   return order.items.map((item, index) => {
                     const isLast = index === order.items.length - 1;
@@ -154,24 +237,17 @@ const MyOrders = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {order.dateCreated}
+                            {formatDate(order.dateCreated)}
                           </Typography>
                         </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {order.status}
-                          </Typography>
-                        </td>
+                        
                       </tr>
                     );
                   });
                 })}
               </tbody>
             </table>
+            </div>
           )}
         </CardBody>
       </Card>

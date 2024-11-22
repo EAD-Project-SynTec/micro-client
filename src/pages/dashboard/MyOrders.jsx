@@ -8,7 +8,7 @@ import {
 } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
-import { getAllOrders } from "@/services/orderService";
+import { getOrdersByUserId } from "@/services/orderService";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const MyOrders = () => {
@@ -36,7 +36,7 @@ const MyOrders = () => {
 
   // Function to fetch all orders
   const fetchAllOrders = () => {
-    getAllOrders(userId)
+    getOrdersByUserId(userId)
       .then((response) => {
         setData(response.data);
       })

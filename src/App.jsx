@@ -13,8 +13,8 @@ function App() {
 
 
       {/*Orders*/}
-      <Route path="/buyer-orders" element={<BuyerOrders/>} />
-      <Route path="/seller-orders" element={<SellerOrders/>} />
+      <Route path="/buyerOrders" element={<BuyerOrders/>} />
+      <Route path="/sellerOrders" element={<SellerOrders/>} />
     </Routes>
   );
 }

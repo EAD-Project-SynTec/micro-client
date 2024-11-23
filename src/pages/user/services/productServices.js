@@ -91,7 +91,7 @@ export const getUnsortedProducts = async () => {
 // Function to get product details
   export const getProductDetails = async (id) => {
     try {
-      const response = await axiosInstance.get(`/Product/details/${id}`);
+      const response = await axiosInstance.get(`product/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching product details:', error);

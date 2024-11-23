@@ -13,11 +13,12 @@ import {
   
   const BuyerOrders = () => {
     const TABLE_HEAD = [
-      "Product ID",
+      "Order ID",
+      "Date Created",
+      "Status",
       "Quantity",
       "Unit Price",
-      "Order Reference",
-      "Order Placed",
+      "Total Price",
     ];
   
     const [data, setData] = useState([]);
@@ -81,6 +82,13 @@ import {
     const formatDate = (dateString) => {
       const options = { year: "numeric", month: "long", day: "numeric" };
       return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const calculateTotalPrice = (items) => {
+      return items.reduce(
+        (total, item) => total + item.quantity * item.price,
+        0
+      ).toFixed(2);
     };
   
     return (
@@ -164,14 +172,14 @@ import {
                           </div>
                         </div>
   
-              <table className="w-full min-w-max table-auto text-left">
+                        <table className="w-full min-w-max table-auto text-left">
                 <thead>
                   <tr>
                     {TABLE_HEAD.map((head) => (
                       <th
                         key={head}
                         scope="col"
-                        className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+                        className="border border-blue-gray-100 bg-blue-gray-50 p-4"
                       >
                         <Typography
                           variant="small"
@@ -185,66 +193,66 @@ import {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.map((order) => {
-                    // Iterate over the items array for each order
-                    return order.items.map((item, index) => {
+                  {filteredData.map((order) =>
+                    order.items?.map((item, index) => {
                       const isLast = index === order.items.length - 1;
                       const classes = isLast
                         ? "p-4"
                         : "p-4 border-b border-blue-gray-50";
-  
+
                       return (
-                        <tr key={item.productID + index}>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {item.productID}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {item.quantity}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              ${item.price}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {order.id}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {formatDate(order.dateCreated)}
-                            </Typography>
-                          </td>
+                        <tr
+                          key={`${order.id}-${item.productID}-${index}`}
+                          onClick={() => handleRowClick(order.id)}
+                          className="cursor-pointer"
+                        >
+                          {index === 0 && (
+                            <>
+                              <td
+                                className="p-4 border border-blue-gray-50"
+                                rowSpan={order.items.length}
+                              >
+                                <Typography variant="small" color="blue-gray">
+                                {order.id}
+                                </Typography>
+                              </td>
+                              <td
+                                className="p-4 border border-blue-gray-50"
+                                rowSpan={order.items.length}
+                              >
+                                <Typography variant="small" color="blue-gray">
+                                {formatDate(order.dateCreated)}
+                                </Typography>
+                              </td>
+                              <td
+                                className="p-4 border border-blue-gray-50"
+                                rowSpan={order.items.length}
+                              >
+                                <Typography variant="small" color="blue-gray">
+                                {order.status}
+                                </Typography>
+                              </td>
+                            </>
+                          )}
+                          {/* <td className={classes}>{item.productID}</td> */}
                           
+                          <td className="p-4 border border-blue-gray-50"><Typography variant="small" color="blue-gray">{item.quantity}</Typography></td>
+                          <td className="p-4 border border-blue-gray-50"><Typography variant="small" color="blue-gray">${item.price}</Typography></td>
+                          
+                          {index === 0 && (
+                            <td
+                              className="p-4 border border-blue-gray-50"
+                              rowSpan={order.items.length}
+                            >
+                              <Typography variant="small" color="blue-gray">
+                              ${calculateTotalPrice(order.items)}
+                              </Typography>
+                            </td>
+                          )}
                         </tr>
                       );
-                    });
-                  })}
+                    })
+                  )}
                 </tbody>
               </table>
               </div>

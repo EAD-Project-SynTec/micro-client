@@ -14,7 +14,6 @@ const SellerOrders = () => {
     "User ID",
     "Date Created",
     "Status",
-    // "Product ID",
     "Quantity",
     "Unit Price",
     "Total Price",

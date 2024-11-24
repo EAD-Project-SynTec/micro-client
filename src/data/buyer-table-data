@@ -1,0 +1,39 @@
+export const buyerTableData = [
+    {
+        orderReference : "1000597899",
+        product : "Carrot",
+        quantity : 20,
+        photoName:"/img/carrot.png",
+        status: "readytopickup",
+        deliveryDate:"2023-01-20",
+        orderPlaced:"2023-01-10",
+    },
+    {
+        orderReference : "1000697899",
+        product : "Carrot",
+        quantity : 20,
+        photoName:"/img/carrot.png",
+        status: "pickedup",
+        deliveryDate:"2023-01-20",
+        orderPlaced:"2023-01-10",
+    },
+    {
+        orderReference : "1000797899",
+        product : "Carrot",
+        quantity : 20,
+        photoName:"/img/carrot.png",
+        status: "delivered",
+        deliveryDate:"2023-01-20",
+        orderPlaced:"2023-01-10",
+    },
+    {
+        orderReference : "1000897899",
+        product : "Carrot",
+        quantity : 20,
+        photoName:"/img/carrot.png",
+        status: "readytopickup",
+        deliveryDate:"2023-01-20",
+        orderPlaced:"2023-01-10",
+    },
+]
+

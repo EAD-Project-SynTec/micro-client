@@ -16,16 +16,16 @@ const PlaceOrderModal = ({ open, setOpen, product, selectedQuantity, deliveryFee
     const addL1Ref = useRef(null);
     const addL2Ref = useRef(null);
     const [loading, setLoading] = useState(false);
-    useEffect(() => {
-      try{
-        const token = sessionStorage.getItem('jwtToken');
-        const decodedData = jwtDecode(token);
-        setBuyerID(decodedData.email);
-        console.log(decodedData.email)
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-      }
-    }, []);
+    // useEffect(() => {
+    //   try{
+    //     const token = sessionStorage.getItem('jwtToken');
+    //     const decodedData = jwtDecode(token);
+    //     setBuyerID(decodedData.email);
+    //     console.log(decodedData.email)
+    //   } catch (error) {
+    //     console.error('Error fetching orders:', error);
+    //   }
+    // }, []);
     const handleModalOPen = () => {
         open ? setOpen(false) :
             setOpen(true);   

@@ -44,15 +44,15 @@ const ProductDetails = () => {
   const [modelOpen, setModelOpen] = useState(false);
   const navigate = useNavigate();
   const [buyerID, setBuyerID] = useState('');
-  useEffect(() => {
-    try{
-      const token = sessionStorage.getItem('jwtToken');
-      const decodedData = jwtDecode(token);
-      setBuyerID(decodedData.email);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try{
+  //     const token = sessionStorage.getItem('jwtToken');
+  //     const decodedData = jwtDecode(token);
+  //     setBuyerID(decodedData.email);
+  //   } catch (error) {
+  //     console.error('Error fetching orders:', error);
+  //   }
+  // }, []);
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
@@ -107,52 +107,74 @@ const ProductDetails = () => {
   const handleSuccessOrder = (success) => {
     setSuccessOrder(success);
   }
-  const addToCart = async (productId) => {
-    try {
-      const token = sessionStorage.getItem('jwtToken');
-      if (!token) {
-        console.error('Token not found in sessionStorage.');
-        navigate('/login');
-        return;
-      }
-      let decodedData;
-      try {
-        decodedData = jwtDecode(token);
-        console.log('Decoded Data:', decodedData);
-      } catch (error) {
-        console.error('Failed to decode token:', error);
-        navigate('/login');
-        return;
-      }
+  const handleAddToCart = (productId) => {
+    const data = {
+      customerEmail: 'kwalskinick@gmail.com',
+      price: product.price,
+      productID: productId,
+      quantity: selectedQuantity
+    };
+  
+    console.log('Adding to cart:', data);
+  
+    axios.post('http://localhost:8084/api/v1/cart', data)
+      .then(response => {
+        console.log('Response:', response.data);
+      })
+      .catch(error => {
+        console.error('There was an error adding to the cart!', error);
+      });
+  };
+  
 
-      // Check if the user has the 'User' role
-      if (decodedData.role === 'User') {
-        setLoading(true);
-        const cart = {
-          buyerId: buyerID,
-          productId: productId,
-          quantity: selectedQuantity
-        };
+  // const addToCart = async (productId) => {
+  //   try {
+  //     console.log('Adding to cart:', productId, selectedQuantity,"émail",buyerID,"price is",product.price );
+      
+  //     const token = sessionStorage.getItem('jwtToken');
+  //     if (!token) {
+  //       console.error('Token not found in sessionStorage.');
+  //       navigate('/login');
+  //       return;
+  //     }
+  //     let decodedData;
+  //     try {
+  //       decodedData = jwtDecode(token);
+  //       console.log('Decoded Data:', decodedData);
+  //     } catch (error) {
+  //       console.error('Failed to decode token:', error);
+  //       navigate('/login');
+  //       return;
+  //     }
 
-        try {
-          // Attempt to add the product to the cart
-          await addToCartProducts(cart);
-          setOpen(true); // Open the success message or modal
-          console.log('Product added to cart successfully.');
-        } catch (error) {
-          console.error('Error adding items to the cart:', error);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        // Navigate to login if the user role is not 'User'
-        console.log('User role is not authorized. Redirecting to login.');
-        navigate('/login');
-      }
-    } catch (error) {
-      console.error('An unexpected error occurred:', error);
-    }
-  }
+  //     // Check if the user has the 'User' role
+  //     if (decodedData.role === 'User') {
+  //       setLoading(true);
+  //       const cart = {
+  //         buyerId: buyerID,
+  //         productId: productId,
+  //         quantity: selectedQuantity
+  //       };
+
+  //       try {
+  //         // Attempt to add the product to the cart
+  //         await addToCartProducts(cart);
+  //         setOpen(true); // Open the success message or modal
+  //         console.log('Product added to cart successfully.');
+  //       } catch (error) {
+  //         console.error('Error adding items to the cart:', error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     } else {
+  //       // Navigate to login if the user role is not 'User'
+  //       console.log('User role is not authorized. Redirecting to login.');
+  //       navigate('/login');
+  //     }
+  //   } catch (error) {
+  //     console.error('An unexpected error occurred:', error);
+  //   }
+  // }
 
 
   // const token = sessionStorage.getItem('jwtToken');
@@ -181,9 +203,7 @@ const ProductDetails = () => {
   const handleQuantityChange = (newQuantity) => {
     setSelectedQuantity(newQuantity);
   };
-//   if (product.length === 0) {
-//     return <div>Loading...</div>
-//   }
+
   return (
     <div className=' bg-secondary'>
       <MainNav />
@@ -270,7 +290,8 @@ const ProductDetails = () => {
 <button className='border-green-500 border rounded-full inline-flex items-center 
                   justify-center py-2 px-7 text-center text-sm font-medium text-green-500 hover:bg-green-500/10
                   disabled:bg-gray-300 disabled:border-gray-300 disabled:text-dark-500' disabled={loading}
-                  onClick={() => { addToCart(id) }}
+                  // onClick={() => { addToCart(id) }}
+                  onClick={()=>{handleAddToCart(id)}}
                 // onClick={() => { handleUser}}
                 >
                   {loading ? 'Adding to cart' : 'Add to Cart'}

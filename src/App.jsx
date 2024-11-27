@@ -3,6 +3,7 @@ import { Dashboard, Auth } from "@/layouts";
 import LandingPage from "./pages/user/LandingPage";
 import ProductList from "./pages/user/ProductList";
 import ProductDetails from "./pages/user/ProductDetails";
+import AddToCart from "./pages/user/AddToCart";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/" element={<LandingPage/>} />
       <Route path="/products" element={<ProductList/>}/>
       <Route path='/product-details/:id' element={<ProductDetails/>}></Route>
+      <Route path="/cart" element={<AddToCart/>}/>
     </Routes>
   );
 }

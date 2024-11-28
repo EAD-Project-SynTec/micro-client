@@ -21,19 +21,30 @@ export const getProducts = async (id) => {
 
 //function add products
 export const addProduct = async (formData) => {
-    try {
-        const response = await axiosInstance.post('/Product', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        return response.data;
-        
-    } catch (error) {
-        console.error('Error adding product:', error);
-        throw error;
-    }
+  console.log('FormData:', formData);
+  for (let pair of formData.entries()) {
+    console.log(`${pair[0]}, ${pair[1]}`); 
+  }
+
+  // Convert FormData to JSON
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+
+  try {
+    const response = await axiosInstance.post('/api/v1/product', jsonData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding product:', error);
+    throw error;
+  }
 };
+
 
 //function to get product details by ID
 export const getProductByID = async (id) => {
@@ -185,7 +196,8 @@ export const getProductsBySellerID = async (id) => {
   //function to get product list by seller ID  Product/${productId}
   export const deleteProduct = async (id) => {
     try {
-        const response = await axiosInstance.delete(`/Product/${id}`);
+        const response = await axiosInstance.delete(`/api/v1/product/${id}`);
+        console.log(response);
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);

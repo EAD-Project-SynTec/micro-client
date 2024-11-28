@@ -29,7 +29,7 @@ const MyProductsTable = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         if (id != 0) {
-        //   deleteConfirmHandler(id);
+          deleteConfirmHandler(id);
         }
         console.log("deleted");
         Swal.fire({
@@ -46,7 +46,6 @@ const MyProductsTable = () => {
     try {
       const productData = await getProducts();
       setProducts(productData);
-      console.log(productData);
       setTotalPages(productData.totalPages);
     } catch (error) {
       console.error('Error fetching cart details:', error);

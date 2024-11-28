@@ -6,7 +6,7 @@ import { HomeIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import SearchBar from "./SearchBar";
 import { Link, useNavigate } from "react-router-dom";
 import MainNavSide from "./MainNavSide";
-import { getCartItems, getSearchProducts } from "../services/productServices";
+import {  getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
 import { jwtDecode } from "jwt-decode";
 
@@ -16,22 +16,24 @@ const MainNav = ({ getSearchResults }) => {
   const [userName, setUserName] = useState('');
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
-  useEffect(() => {
-    try {
-      const token = sessionStorage.getItem('jwtToken');
-      const decodedData = jwtDecode(token);
-      setUserName(decodedData.email);
-      if (decodedData) {
-        setIsUserLogged(true);
-      }
-      if (decodedData.role == 'User') {
-        setBuyerID(decodedData.email);
-      }
-      console.log(decodedData.email)
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-    }
-  }, []);
+  const email = "kwalskinick@gmail.com"; // Replace with the actual email
+
+  // useEffect(() => {
+  //   try {
+  //     const token = sessionStorage.getItem('jwtToken');
+  //     const decodedData = jwtDecode(token);
+  //     setUserName(decodedData.email);
+  //     if (decodedData) {
+  //       setIsUserLogged(true);
+  //     }
+  //     if (decodedData.role == 'User') {
+  //       setBuyerID(decodedData.email);
+  //     }
+  //     console.log(decodedData.email)
+  //   } catch (error) {
+  //     console.error('Error fetching orders:', error);
+  //   }
+  // }, []);
 
   const handleSearch = async (searchTerm) => {
     try {
@@ -48,18 +50,19 @@ const MainNav = ({ getSearchResults }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const cartItems = await getCartItems(buyerID);
-        setCartCount(cartItems.length);
-      } catch (error) {
-        console.error('Error fetching shopping cart items:', error);
+  // useEffect(() => {
+  //   const fetchCartItems = async () => {
+  //     try {
+  //       const cartItems = await cartItems(email);
+  //       setCartCount(cartItems.length);
+  //     } catch (error) {
+  //       console.error('Error fetching shopping cart items:', error);
 
-      }
-    };
-    fetchCartItems();
-  }, [buyerID]);
+  //     }
+  //   };
+  //   fetchCartItems();
+  // }, [buyerID]);
+
   return (
     <>
       <MainNavSide />

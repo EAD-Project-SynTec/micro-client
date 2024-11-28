@@ -14,6 +14,20 @@ export const createNewOrder = async (formData) => {
       throw error;
     }
   };
+// Function to create orders from cart
+export const createNewOrderList = async (formData) => {
+  try {
+    const response = await axiosInstance.post('/NewOrder/CreateOrders', formData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating new order:', error);
+    throw error;
+  }
+};
 
 export const fetchCourierDetails = async (orderID) => {
     try {

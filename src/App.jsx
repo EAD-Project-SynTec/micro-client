@@ -8,6 +8,8 @@ import BuyerOrderDetails from "./pages/dashboard/buyer/BuyerOrderDetails";
 import SellerOrderDetails from "./pages/dashboard/seller/SellerOrderDetails";
 
 import ProductList from "./pages/user/ProductList";
+import ProductDetails from "./pages/user/ProductDetails";
+import AddToCart from "./pages/user/AddToCart";
 
 
 function App() {
@@ -26,7 +28,8 @@ function App() {
       <Route path="/dashboard/sellerOrders/:orderId" element={<SellerOrderDetails/>} />
 
       <Route path="/products" element={<ProductList/>}/>
-
+      <Route path='/product-details/:id' element={<ProductDetails/>}></Route>
+      <Route path="/cart" element={<AddToCart/>}/>
     </Routes>
   );
 }

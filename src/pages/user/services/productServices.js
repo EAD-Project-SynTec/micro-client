@@ -91,7 +91,7 @@ export const getUnsortedProducts = async () => {
 // Function to get product details
   export const getProductDetails = async (id) => {
     try {
-      const response = await axiosInstance.get(`/Product/details/${id}`);
+      const response = await axiosInstance.get(`product/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching product details:', error);
@@ -110,21 +110,24 @@ export const addToCartProducts = async (cart) => {
     }
   };
 
-// Function to get shopping cart items
-  export const getCartItems = async (buyerId) => {
-    try {
-      const response = await axiosInstance.get(`/ShoppingCart/items?customerId=${buyerId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching shopping cart items:', error);
-      throw error;
-    }
-  };
+// // Function to get shopping cart items
+// export const getCartItems = async (buyerId, email, password) => {
+//   try {
+//     const response = await axiosInstance.get(
+//       `/cart/items?email=${encodeURIComponent(email)}}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching shopping cart items:', error);
+//     throw error;
+//   }
+// };
+
 
   // Function to get shopping cart items count
   export const getCartItemsCount = async (buyerId) => {
     try {
-      const response = await axiosInstance.get(`/ShoppingCart/items?customerId=${buyerId}`);
+      const response = await axiosInstance.get(`/ShoppingCart/items?email=${buyerId}`);
       return response.data.length;
     } catch (error) {
       console.error('Error fetching shopping cart items:', error);

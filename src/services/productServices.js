@@ -60,7 +60,7 @@ export const getProductByID = async (id) => {
 //function to update product details
 export const updateProduct = async (id, formData) => {
     try {
-        const response = await axiosInstance.put(`Product/update/${id}`, formData);
+        const response = await axiosInstance.put(`/api/v1/product/${id}`, formData);
         return response.data;
     } catch (error) {
         console.error('Error updating product:', error);

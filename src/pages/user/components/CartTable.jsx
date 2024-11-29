@@ -114,7 +114,7 @@ console.log(cartItems)
                 <td className={classes}>
                     <div className="flex items-center">
                         <img
-                       src={"https://syntecblobstorage.blob.core.windows.net/products/" + item.productImageUrl} alt={item.productName}
+                       src={ item.imageUrl} alt={item.productName}
                         className="w-36 h-24 rounded-sm object-cover"
                         />
                         <div className="ml-4">

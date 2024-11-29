@@ -41,14 +41,7 @@ const CheckoutCard = ({ cartData }) => {
                     <h1>Order Total :</h1>
                     <p>Rs {(sumTotalPrices + shippingCost).toFixed(2)}</p>
                 </div>
-                <div className='mt-3 py-3'>
-                    <button 
-                        className='w-full rounded-md text-white py-2 text-sm bg-green-500'
-                        onClick={handleCheckout}
-                    >
-                        Checkout Order
-                    </button>
-                </div>
+
             </div>
         </div>
     )

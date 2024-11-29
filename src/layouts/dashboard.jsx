@@ -6,6 +6,7 @@ import {
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 import AddProducts from "@/pages/dashboard/AddProducts";
+import ProductUpdate from '../pages/dashboard/UpdateProduct';
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -32,7 +33,12 @@ export function Dashboard() {
         
         <Route path="/add-products" element={<AddProducts />}>
           {" "}
-        </Route></Routes>
+        </Route>
+        <Route path="/update-product/:id" element={<ProductUpdate />}>
+          {" "}
+        </Route>
+        
+        </Routes>
       </div>
     </div>
   );

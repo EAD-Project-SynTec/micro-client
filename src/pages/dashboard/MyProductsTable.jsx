@@ -1,10 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import axios from "axios"
 import { PencilIcon, UserPlusIcon, } from "@heroicons/react/24/solid";
 import { HiTrash } from "react-icons/hi2";
-import moment from 'moment';
 import Swal from 'sweetalert2'
 import { Card, CardHeader, Typography, Button, CardBody, CardFooter, Avatar, IconButton, Tooltip, } from "@material-tailwind/react";
 import { deleteProduct, getProductsBySellerID, getProductsBySellerIDPage,getProducts } from '@/services/productServices';
@@ -45,8 +43,10 @@ const MyProductsTable = () => {
   const fetchProducts = async (pageNum) => {
     try {
       const productData = await getProducts();
+      console.log("Product Data",productData);
       setProducts(productData);
       setTotalPages(productData.totalPages);
+
     } catch (error) {
       console.error('Error fetching cart details:', error);
     }
@@ -124,25 +124,25 @@ const MyProductsTable = () => {
               </tr>
             </thead>
             <tbody>
-            {products.map((product, index)  =>  (
+            {products.map((p, index)  =>  (
                   <tr key={index}>
                     <td className="p-4 border-b border-blue-gray-50">
                       <div className="flex items-center gap-3">
-                        <Avatar src={product.imageUrl} alt={product.name} size="sm" />
+                        <Avatar src={p.imageUrl} alt={p.name} size="sm" />
                         <div className="flex flex-col">
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {product.name}
+                            {p.name}
                           </Typography>
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal opacity-70"
                           >
-                            {`${product.description.split(' ').slice(0, 3).join(' ')}...`}
+                            {`${p.description?.split(' ').slice(0, 3).join(' ')}...`}
                           </Typography>
                         </div>
                       </div>
@@ -155,7 +155,7 @@ const MyProductsTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {"PO-" + 1000 + product.id}
+                          {"PO-" + 1000 + p.id}
                         </Typography>
                       </div>
                     </td>
@@ -166,7 +166,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {product.category}
+                        {p.category}
                       </Typography>
                     </td>
 
@@ -176,7 +176,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {product.price.toFixed(2)}
+                        {p.price.toFixed(2)}
                       </Typography>
                     </td>
 
@@ -186,7 +186,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {product.quantity}
+                        {p.quantity}
                       </Typography>
                     </td>
 
@@ -196,7 +196,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {product.popularity}
+                        2
                       </Typography>
                     </td>
 
@@ -204,7 +204,7 @@ const MyProductsTable = () => {
                     <td className="p-4 border-b border-blue-gray-50">
                       <Tooltip content="Edit Product">
                         <IconButton variant="text"
-                          onClick={() => navigate(`/dashboard/update-product/${product.id}`)}
+                          onClick={() => navigate(`/dashboard/update-product/${p.id}`)}
                         >
                           <PencilIcon className="h-4 w-4"
                           />
@@ -214,7 +214,7 @@ const MyProductsTable = () => {
                     <td className="p-4 border-b border-blue-gray-50">
                       <Tooltip content="Delete Product">
                         <IconButton variant="text" color='red'
-                          onClick={() => PopupHandler(product.id)}
+                          onClick={() => PopupHandler(p.id)}
                         >
                           <HiTrash className="h-4 w-4"
                           />

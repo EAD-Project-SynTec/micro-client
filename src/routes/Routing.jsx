@@ -11,9 +11,10 @@ import {
 import SelectCourier from "@/seller/SellerDashboard/dashboard/components/SelectCourier";
 import OrderDetails from "@/seller/SellerDashboard/dashboard/components/OrderDetails";
 import AddProducts from "@/seller/SellerDashboard/dashboard/AddProducts";
-import UpdateProduct from "@/seller/SellerDashboard/dashboard/UpdateProduct";
+import UpdateProduct from "../pages/dashboard/UpdateProduct";
 import ReturnProductDetails from "@/seller/SellerDashboard/dashboard/components/reviews/ReturnProductDetails";
 import Review from "@/seller/SellerDashboard/dashboard/Review";
+import ProductUpdate from "@/pages/dashboard/UpdateProduct";
 const Routing = () => {
   return (
     <>
@@ -53,10 +54,11 @@ const Routing = () => {
         <Route path="/add-products" element={<AddProducts />}>
           {" "}
         </Route>
-
+        <Route path="/update-product/:id" element={<ProductUpdate />}>
+          {" "}
+        </Route>
         <Route path="my-orders/:orderID" element={<OrderDetails />}></Route>
        
-        <Route path="/update-product/:id" element={<UpdateProduct />}></Route>
       </Routes>
     </>
   );

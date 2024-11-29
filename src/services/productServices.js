@@ -49,7 +49,7 @@ export const addProduct = async (formData) => {
 //function to get product details by ID
 export const getProductByID = async (id) => {
     try {
-        const response = await axiosInstance.get(`/Product/${id}`);
+        const response = await axiosInstance.get(`/api/v1/product/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);

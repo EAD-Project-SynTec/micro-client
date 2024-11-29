@@ -108,11 +108,14 @@ const ProductDetails = () => {
     setSuccessOrder(success);
   }
   const handleAddToCart = (productId) => {
+    console.log(product)
     const data = {
       customerEmail: 'kwalskinick@gmail.com',
       price: product.price,
-      productID: productId,
-      quantity: selectedQuantity
+      productID: product.id,
+      quantity: product.quantity,
+      imageUrl: product.imageUrl,
+      name: product.name
     };
   
     console.log('Adding to cart:', data);

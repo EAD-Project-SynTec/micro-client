@@ -99,7 +99,7 @@ const MainNav = ({ getSearchResults }) => {
               <div className="flex items-center justify-end px-4 ">
                 <SearchBar onSearch={handleSearch} />
                 <div className="hidden justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
-                  <Badge content={cartCount} color="green" className="mx-3">
+                  <Badge  color="green" className="mx-3">
                     <IconButton color="gray" variant="outlined" className="rounded-full"
                       onClick={() => navigate("/cart")}
                     >

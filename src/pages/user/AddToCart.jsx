@@ -13,6 +13,7 @@ import CheckoutCard from './components/CheckoutCard';
 
 
 export default function AddToCart() {
+
     const [cartItems, setCartItems] = useState([]);
     const [buyerID, setBuyerID] = useState('kwalskinick@gmail.com');
     const [open, setOpen] = useState(false);
@@ -42,9 +43,9 @@ export default function AddToCart() {
         ).then((response) => {
           console.log(response.data.orderItems);
           console.log(response.data.customerEmail);
-          setCartEmail(response.data.customerEmail);
+          setCartEmail(userId);
           setCartData(response.data.orderItems); // Set the cart data if successful
-
+          setSuccessOrder(true);
         });
 
       } catch (error) {
@@ -96,7 +97,7 @@ export default function AddToCart() {
           <CartTable cartItems={cartData} cartEmail={cartEmail} handleDeleteItem={handleDeleteItem} />
         </div>
         <div className='mx-3 mt-5'>
-          <CheckoutCard cartItems={cartItems} openModel={modelOpenHandler} />
+          <CheckoutCard cartData={cartData} openModel={modelOpenHandler} />
         </div>
       </div>
     </div>

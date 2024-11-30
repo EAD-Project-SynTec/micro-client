@@ -31,8 +31,6 @@ function App() {
       <Route path="/buyer/orders" element={<BuyerOrders/>} />
       <Route path="/seller/orders" element={<SellerOrders/>} />
       <Route path="/buyer/orders/:orderId" element={<BuyerOrderDetails />} />
-      <Route path="/seller/orders/:orderId" element={<SellerOrderDetails/>} />
-
       <Route path="/products" element={<ProductList/>}/>
       <Route path='/product-details/:id' element={<ProductDetails/>}></Route>
       <Route path="/cart" element={<AddToCart/>}/>

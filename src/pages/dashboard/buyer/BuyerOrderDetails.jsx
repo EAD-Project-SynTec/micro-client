@@ -8,6 +8,7 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import MainNav from "@/pages/user/components/MainNav";
 
 const BuyerOrderDetails = () => {
   const { orderId } = useParams();
@@ -106,6 +107,7 @@ const BuyerOrderDetails = () => {
 
   return (
     <div>
+      <MainNav/>
       <Card
         className="w-full max-w-4xl mx-auto my-8 shadow-lg"
         style={{ backgroundColor: "#f5f7fa" }}

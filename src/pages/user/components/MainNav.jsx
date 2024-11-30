@@ -16,7 +16,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
   const [userName, setUserName] = useState('');
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
-  const email = "kwalskinick@gmail.com"; // Replace with the actual email
+  const email = "kwalskinick@gmail.com"; 
   const { cartCount } = useCart();
   // const getCartTotal = () => {
   //   return localStorage.getItem('cartTotal') || 0;

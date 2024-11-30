@@ -4,11 +4,11 @@ import Hero from './components/Hero'
 
 const LandingPage = () => {
   return (
+
     <div className=' h-screen bg-secondary'>
       <MainNav/>
       <Hero/>
     </div>
-
   )
 }
 

@@ -9,7 +9,7 @@ import MainNavSide from "./MainNavSide";
 import {  getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
 import { jwtDecode } from "jwt-decode";
-// import  { useCart } from "../cartProvider";
+import  { useCart } from "../cartProvider";
 
 const MainNav = ({ getSearchResults,cartTotal }) => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
   const email = "kwalskinick@gmail.com"; // Replace with the actual email
-  //const {cartCount} = useCart();
+  const { cartCount } = useCart();
   // const getCartTotal = () => {
   //   return localStorage.getItem('cartTotal') || 0;
   // }
@@ -113,7 +113,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
               <div className="flex items-center justify-end px-4 ">
                 <SearchBar onSearch={handleSearch} />
                 <div className="hidden justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
-                  <Badge content={cartTotal} color="green" className="mx-3">
+                  <Badge content={cartCount} color="green" className="mx-3">
                     <IconButton color="gray" variant="outlined" className="rounded-full"
                       onClick={() => navigate("/cart")}
                     >

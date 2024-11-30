@@ -5,9 +5,12 @@ import Swal from 'sweetalert2'
 import { MdOutlineClose } from "react-icons/md";
 import { deleteCartItem } from "@/services/productServices";
 import { jwtDecode } from "jwt-decode";
+import { useCart } from "../cartProvider";
+
 const TABLE_HEAD = ["Item", "Price", "Qty", "Sub Total", ""];   
 export function CartTable({ cartItems,cartEmail,setCartUpdate}) {
   const[cartItemss, setCartItems] = useState([]);
+  const { setCartCount } = useCart();
   console.log(cartEmail)
   const PopupHandler = (productId) => {
     // Find the selected item in the cart using the provided productId
@@ -38,7 +41,7 @@ export function CartTable({ cartItems,cartEmail,setCartUpdate}) {
           .delete(`http://localhost:8084/api/v1/cart`, { data: obj }) // Pass the data in the body of the request
           .then((response) => {
             console.log("Item deleted successfully", response);
-  
+            setCartCount(prevCount => prevCount - 1);
             // Show success alert
             setCartUpdate(prev => prev + 1);
             Swal.fire({

@@ -16,7 +16,7 @@ import PlaceOrderModal from './components/PlaceOrderModal';
 import { addToCartProducts, getProductDetails } from './services/productServices';
 import { jwtDecode } from 'jwt-decode';
 import Review from './components/Review';
-// import { useCart } from './cartProvider';
+import { useCart } from './cartProvider';
 
 function Icon() {
   return (
@@ -46,6 +46,8 @@ const ProductDetails = () => {
   const [modelOpen, setModelOpen] = useState(false);
   const navigate = useNavigate();
   const [buyerID, setBuyerID] = useState('');
+  const {setCartCount} = useCart();
+
   // useEffect(() => {
   //   try{
   //     const token = sessionStorage.getItem('jwtToken');
@@ -125,7 +127,8 @@ const ProductDetails = () => {
     axios.post('http://localhost:8084/api/v1/cart', data)
       .then(response => {
         console.log('Response:', response.data);
-        // setCartCount(prevCount => prevCount + 1);
+        setCartCount(prevCount => prevCount + 1);
+        // console.log('Cart count:', prevCount);	
         setOpen(true);
         setLoading(false);
       })

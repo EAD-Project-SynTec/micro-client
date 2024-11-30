@@ -15,7 +15,7 @@ const AddOrderPopup = ({ onClose, productId }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [address, setAddress] = useState("");
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState();
   const [orderDate, setOrderDate] = useState("");
 
   useEffect(() => {
@@ -88,7 +88,9 @@ const AddOrderPopup = ({ onClose, productId }) => {
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
-        <h2 style={styles.heading}>Add Order</h2>
+      <h2 className="mb-5 text-2xl text-green-400 font-semibold">
+  Place Order
+</h2>
         {productDetails ? (
           <div style={styles.productCard}>
             <img
@@ -100,35 +102,32 @@ const AddOrderPopup = ({ onClose, productId }) => {
               <h3 style={styles.productName}>{productDetails.name}</h3>
               <p style={styles.productDescription}>{productDetails.description}</p>
               <p>
-                <strong>Price:</strong> ${productDetails.price.toFixed(2)}
+                <strong>Unit Price :</strong> Rs.{productDetails.price.toFixed(2)}
               </p>
-              <p>
-                <strong>Available Quantity:</strong> {productDetails.quantity}
-              </p>
+              {/*<p>
+                <strong>Available :</strong> {productDetails.quantity}
+              </p>*/}
             </div>
           </div>
         ) : (
           <p>Loading product details...</p>
         )}
 
-        <div style={styles.inputField}>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel id="quantity-select-label">Quantity</InputLabel>
-            <Select
-              labelId="quantity-select-label"
-              id="quantity-select"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              label="Quantity"
-            >
-              {productDetails &&
-                [...Array(productDetails.quantity).keys()].map((i) => (
-                  <MenuItem key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+<div style={styles.inputField}>
+          <TextField
+            label="Quantity"
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, Math.min(e.target.value, productDetails.quantity)))}
+            variant="outlined"
+            fullWidth
+            inputProps={{
+              min: 1,
+              max: productDetails?.quantity || 1,
+              step: 1,
+            }}
+            helperText={`Available: ${productDetails?.quantity || ""}`}
+          />
         </div>
 
         <div style={styles.inputField}>
@@ -146,17 +145,20 @@ const AddOrderPopup = ({ onClose, productId }) => {
         </div>
 
         <div style={styles.actions}>
-          <Button
-            variant="contained"
+          <button className='bg-green-500 border-green-500 border rounded-full inline-flex items-center 
+                  justify-center py-2 px-8 text-center text-sm font-medium text-white
+                  disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'
             onClick={handleSubmit}
-            style={styles.button}
+           
             disabled={loading}
           >
             {loading ? "Submitting..." : "Submit Order"}
-          </Button>
-          <Button variant="contained" onClick={onClose} style={styles.closeButton}>
+          </button>
+          <button className='bg-red-500 border-red-500 border rounded-full inline-flex items-center 
+                  justify-center py-2 px-8 text-center text-sm font-medium text-white
+                  disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5' onClick={onClose}>
             Close
-          </Button>
+          </button>
         </div>
         {error && <p style={styles.error}>{error}</p>}
         {success && <p style={styles.success}>Order created successfully!</p>}
@@ -182,7 +184,8 @@ const styles = {
     backgroundColor: "white",
     padding: "20px",
     borderRadius: "10px",
-    maxWidth: "600px",
+    maxWidth: "450px",
+    minWidth: "450px",
     textAlign: "center",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
   },
@@ -198,11 +201,12 @@ const styles = {
     marginBottom: "20px",
   },
   productImage: {
-    width: "120px",
-    height: "120px",
+    width: "150px",
+    height: "150px",
     borderRadius: "10px",
     objectFit: "cover",
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+    marginBottom: "20px",  
   },
   productInfo: {
     textAlign: "left",

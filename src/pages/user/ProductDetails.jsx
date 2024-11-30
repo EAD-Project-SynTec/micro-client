@@ -18,6 +18,7 @@ import { jwtDecode } from 'jwt-decode';
 import Review from './components/Review';
 import { useCart } from './cartProvider';
 import CartServices from '@/services/cartServices';
+import AddOrderButton from '../dashboard/buyer/AddOrderButton';
 
 function Icon() {
   return (
@@ -100,7 +101,9 @@ const ProductDetails = () => {
     } catch (error) {
       console.error('An error occurred:', error);
     }
-  };
+  
+  
+    };
   const handleSelectDestination = (destination) => {
     setDestination(destination);
   }
@@ -288,13 +291,14 @@ const ProductDetails = () => {
                 <ProductQuantity minimumQuantity={1} availableStock={product.quantity} onQuantityChange={handleQuantityChange} />
               </div>
               <div className='flex gap-3 md:justify-end mt-8'>
-              <button className='bg-green-500 border-green-500 border rounded-full inline-flex items-center 
+              {/*<button className='bg-green-500 border-green-500 border rounded-full inline-flex items-center 
                   justify-center py-2 px-8 text-center text-sm font-medium text-white
                   disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'
         onClick={handleModalOPen}
->
+> 
   Buy Now
-</button>
+</button>*/}<AddOrderButton productId={id} />
+
 
 <button className='border-green-500 border rounded-full inline-flex items-center 
                   justify-center py-2 px-7 text-center text-sm font-medium text-green-500 hover:bg-green-500/10

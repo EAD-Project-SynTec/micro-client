@@ -2,6 +2,7 @@ import React from 'react'
 import MainNav from './components/MainNav'
 import Hero from './components/Hero'
 
+
 const LandingPage = () => {
   return (
 

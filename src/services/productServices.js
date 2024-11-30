@@ -210,3 +210,21 @@ export const getProductsBySellerID = async (id) => {
         throw error;
     }
 };
+
+
+export const addReview = async (data) => {
+  try {
+    console.log('Review Data:--------------', data);
+    const response = await axiosInstance.post('/api/v1/review', {
+      productId: data.productId,
+      comment: data.comment,
+      rating: data.rating,
+      reviewImageUrl : "https://spar2u.lk/cdn/shop/files/RedGrapes_458x595.jpg?v=1714653337"
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error adding review:', error);
+    throw error;
+  }
+};

@@ -9,10 +9,27 @@ import AddProducts from "@/pages/dashboard/AddProducts";
 import ProductUpdate from '../pages/dashboard/UpdateProduct';
 import SellerOrderDetails from "@/pages/dashboard/seller/SellerOrderDetails";
 import SellerOrders from "@/pages/dashboard/seller/SellerOrders";
+import { getDecodedToken, hasRole } from "../services/authService";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    const decodedToken = getDecodedToken();
+    if (decodedToken) {
+        const hasDefaultRole = hasRole(decodedToken, 'seller');
+        console.log('user is :', hasDefaultRole);
+        if(!hasDefaultRole){
+          navigate('/login');
+        }
+    }else{
+      navigate('/login');
+    } 
+  },[])
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">

@@ -34,7 +34,7 @@ api.interceptors.request.use(
 const AuthService = {
   Registration: async (formData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/signup`, formData, {
+      const response = await axios.post(`${BASE_URL}/api/user/auth/signup`, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -94,7 +94,7 @@ const AuthService = {
     },
     login: async (data) => {
         try {
-          const response = await axios.post(`${BASE_URL}/api/auth/login`, data);
+          const response = await axios.post(`${BASE_URL}/api/user/auth/login`, data);
         
           return response.data; // Return the response data if needed
         } catch (error) {

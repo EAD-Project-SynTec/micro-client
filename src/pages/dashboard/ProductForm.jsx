@@ -239,7 +239,7 @@ if (isUpdate) {
            
             {/* upload product image */}
             <Title title="Upload Product Image" />
-            <div className="flex items-center justify-center w-full">
+            <div className="flex items-center justify-center w-full h-[200px]">
               {!isSelectimg && !isUpdate ? (
                 <label
                   htmlFor="dropzone-file"
@@ -282,17 +282,32 @@ if (isUpdate) {
                   />
                 </label>
               ) : (
-                 selectedFile && (
-                  <div className="mt-4 text-sm text-gray-700">
+                 selectedFile && ( <div className="h-[170px]"> {!imgLoading ? (<div className="mt-4 text-sm text-gray-700 h-[160px] ">
                     <img
                       className=" max-w-[150px] max-h-[150px]"
                       src={productimg || selectedFile}
                       alt=""
                     />
+                    </div>
+                      
+                    ) : (
+                      <div className="w-8 h-8 mb-4 border-4 border-green-500 border-dashed rounded-full animate-spin"></div>
+                    )}
+                  <div>
                    
-                    {isUpdate && (<Button className=" p-2 absolute right-10"  >
-                Update Image
-              </Button>)}
+                   {isUpdate && !imgLoading && (
+  <label className="p-2 absolute right-10 text-green-500 hover:text-black hover:cursor-pointer">
+    Update Image
+    <input
+      id="dropzone-file"
+      type="file"
+      className="hidden"
+      ref={fileRef}
+      onChange={handleFileChange}
+    />
+  </label>
+)}
+                  </div>
                   </div>
                 )
               )}

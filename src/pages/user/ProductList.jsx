@@ -71,7 +71,7 @@ const ProductList = () => {
   };
   return (
     <div>
-      <MainNav getSearchResults={handleSearchData}/>
+      <MainNav  getSearchResults={handleSearchData}/>
       <SortBar handleSortedData={handleSortedData}/>
       <div className='grid grid-cols-5'>
         <Filterbar items={products} applyFilters={applyFilters} />

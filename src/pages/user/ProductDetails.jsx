@@ -16,6 +16,9 @@ import PlaceOrderModal from './components/PlaceOrderModal';
 import { addToCartProducts, getProductDetails } from './services/productServices';
 import { jwtDecode } from 'jwt-decode';
 import Review from './components/Review';
+import { useCart } from './cartProvider';
+import CartServices from '@/services/cartServices';
+
 function Icon() {
   return (
     <svg
@@ -44,6 +47,8 @@ const ProductDetails = () => {
   const [modelOpen, setModelOpen] = useState(false);
   const navigate = useNavigate();
   const [buyerID, setBuyerID] = useState('');
+  const {setCartCount} = useCart();
+
   // useEffect(() => {
   //   try{
   //     const token = sessionStorage.getItem('jwtToken');
@@ -107,22 +112,26 @@ const ProductDetails = () => {
   const handleSuccessOrder = (success) => {
     setSuccessOrder(success);
   }
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = () => {
     console.log(product)
     const data = {
       customerEmail: 'kwalskinick@gmail.com',
       price: product.price,
       productID: product.id,
-      quantity: product.quantity,
+      quantity: selectedQuantity,
       imageUrl: product.imageUrl,
       name: product.name
     };
-  
+    
     console.log('Adding to cart:', data);
-  
-    axios.post('http://localhost:8084/api/v1/cart', data)
-      .then(response => {
+    setLoading(true);
+    CartServices.addToCart(data)
+    .then(response => {
         console.log('Response:', response.data);
+        setCartCount(prevCount => prevCount + 1);
+        // console.log('Cart count:', prevCount);	
+        setOpen(true);
+        setLoading(false);
       })
       .catch(error => {
         console.error('There was an error adding to the cart!', error);
@@ -205,6 +214,7 @@ const ProductDetails = () => {
 
   const handleQuantityChange = (newQuantity) => {
     setSelectedQuantity(newQuantity);
+    console.log(newQuantity);
   };
 
   return (

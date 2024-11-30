@@ -6,16 +6,31 @@ import { Link, useNavigate } from "react-router-dom";
 import MainNavSide from "./MainNavSide";
 import {  getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
-import { jwtDecode } from "jwt-decode";   //public\img\log_img.png
 import logoImg from "../../../../public/img/log_img.png";
-const MainNav = ({ getSearchResults }) => {
+import { jwtDecode } from "jwt-decode";
+import  { useCart } from "../cartProvider";
+
+const MainNav = ({ getSearchResults,cartTotal }) => {
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
+  // const [cartCount, setCartCount] = useState(0);
   const [userName, setUserName] = useState('');
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
   const email = "kwalskinick@gmail.com"; // Replace with the actual email
+  const { cartCount } = useCart();
+  // const getCartTotal = () => {
+  //   return localStorage.getItem('cartTotal') || 0;
+  // }
+  // Usage example in another component:
+// const [cartNumber, setCartNumber] = useState(getCartTotal());
 
+// To keep it in sync, use useEffect
+// useEffect(() => {
+//   const total = getCartTotal();
+//   setCartNumber(total);
+// }, [cartTotal]); // Add dependencies if needed
+
+  // const cartNumber = cartTotal?cartTotal:0;
   // useEffect(() => {
   //   try {
   //     const token = sessionStorage.getItem('jwtToken');
@@ -95,8 +110,9 @@ const MainNav = ({ getSearchResults }) => {
               {/* signup and search */}
               <div className="flex items-center justify-end px-4 ">
                 <SearchBar onSearch={handleSearch} />
-                <div className="justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
-                  <Badge  color="green" className="mx-3">
+                <div className="hidden justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
+                  <Badge content={cartCount} color="green" className="mx-3">
+
                     <IconButton color="gray" variant="outlined" className="rounded-full"
                       onClick={() => navigate("/cart")}
                     >

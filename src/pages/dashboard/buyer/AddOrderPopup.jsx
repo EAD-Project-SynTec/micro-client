@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
-const AddOrderPopup = ({ onClose }) => {
+const AddOrderPopup = ({ onClose, productId }) => {
   const [productDetails, setProductDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [address, setAddress] = useState(""); // State for address input
-  const [quantity, setQuantity] = useState(1); // Default quantity to 1
-  const [orderDate, setOrderDate] = useState(""); // State for order date
+  const [address, setAddress] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [orderDate, setOrderDate] = useState("");
 
-  // Fetch product details
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/api/v1/product/26");
+        const response = await axios.get(`http://localhost:8081/api/v1/product/${productId}`);
         setProductDetails(response.data);
       } catch (err) {
         console.error("Error fetching product details:", err);
@@ -28,12 +29,11 @@ const AddOrderPopup = ({ onClose }) => {
     };
 
     fetchProductDetails();
-  }, []);
+  }, [productId]);
 
-  // Set the current date and time
   useEffect(() => {
-    const currentDateTime = new Date().toISOString(); // Get current date and time in ISO format
-    setOrderDate(currentDateTime); // Set order date state
+    const currentDateTime = new Date().toISOString();
+    setOrderDate(currentDateTime);
   }, []);
 
   const handleSubmit = async () => {
@@ -41,29 +41,27 @@ const AddOrderPopup = ({ onClose }) => {
       setError("Address and product details are required.");
       return;
     }
-
-    // Dynamically create the items array based on fetched product details and selected quantity
+  
     const orderData = {
-      userId: "User10", // Hardcoded userId for now
-      status: "Processing",
-      address: address, // Include address in order data
-      dateCreated: orderDate, // Include current date and time
+      userId: "kavin@gmail.com",
+      address,
+      dateCreated: orderDate,
       items: [
         {
-          productId: productDetails.id, // Dynamic productId
-          quantity: quantity, // Selected quantity
-          price: productDetails.price, // Fetched price
+          productID: productDetails.id,
+          quantity: quantity,
+          price: productDetails.price,
         },
       ],
     };
-
+  
     setLoading(true);
     setError("");
     setSuccess(false);
-
+  
     try {
       const response = await axios.post(
-        "http://localhost:8084/api/v1/order/create-order",
+        "http://localhost:8084/api/v1/order",
         orderData,
         {
           headers: {
@@ -73,20 +71,24 @@ const AddOrderPopup = ({ onClose }) => {
       );
       setSuccess(true);
       console.log("Order created successfully:", response.data);
+      Swal.fire("Success", "Order created successfully!", "success").then(() => {
+        // Close the modal after the alert is dismissed
+        onClose();
+      });
     } catch (err) {
       setError("Failed to create order. Please try again.");
+      Swal.fire("Error", "Failed to create order. Please try again.", "error");
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
         <h2 style={styles.heading}>Add Order</h2>
-
-        {/* Display product details beautifully */}
         {productDetails ? (
           <div style={styles.productCard}>
             <img
@@ -98,22 +100,17 @@ const AddOrderPopup = ({ onClose }) => {
               <h3 style={styles.productName}>{productDetails.name}</h3>
               <p style={styles.productDescription}>{productDetails.description}</p>
               <p>
-                <strong>Category:</strong> {productDetails.category}
-              </p>
-              <p>
                 <strong>Price:</strong> ${productDetails.price.toFixed(2)}
               </p>
               <p>
                 <strong>Available Quantity:</strong> {productDetails.quantity}
               </p>
-              
             </div>
           </div>
         ) : (
           <p>Loading product details...</p>
         )}
 
-        {/* Quantity selection dropdown */}
         <div style={styles.inputField}>
           <FormControl fullWidth variant="outlined">
             <InputLabel id="quantity-select-label">Quantity</InputLabel>
@@ -124,34 +121,33 @@ const AddOrderPopup = ({ onClose }) => {
               onChange={(e) => setQuantity(e.target.value)}
               label="Quantity"
             >
-              {productDetails && 
-                [...Array(productDetails.quantity).keys()].map(i => (
+              {productDetails &&
+                [...Array(productDetails.quantity).keys()].map((i) => (
                   <MenuItem key={i + 1} value={i + 1}>
                     {i + 1}
                   </MenuItem>
-                ))
-              }
+                ))}
             </Select>
           </FormControl>
         </div>
 
-        {/* Address input field */}
         <div style={styles.inputField}>
           <TextField
-            id="outlined-textarea"
-            label="Delivery Address"
-            placeholder="Enter your address"
+            id="outlined-multiline-static"
+            label="Adress"
+             placeholder="Enter dilivery address"
             multiline
-            fullWidth
-            variant="outlined"
+            rows={4}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            variant="outlined"
+            fullWidth
           />
         </div>
 
-        {/* Order form actions */}
         <div style={styles.actions}>
-          <Button variant="contained"
+          <Button
+            variant="contained"
             onClick={handleSubmit}
             style={styles.button}
             disabled={loading}
@@ -186,7 +182,7 @@ const styles = {
     backgroundColor: "white",
     padding: "20px",
     borderRadius: "10px",
-    maxWidth: "500px",
+    maxWidth: "600px",
     textAlign: "center",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
   },

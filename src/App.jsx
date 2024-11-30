@@ -28,10 +28,10 @@ function App() {
 
 
       {/*Orders*/}
-      <Route path="/dashboard/buyerOrders" element={<BuyerOrders/>} />
-      <Route path="/dashboard/sellerOrders" element={<SellerOrders/>} />
-      <Route path="/dashboard/buyerOrders/:orderId" element={<BuyerOrderDetails />} />
-      <Route path="/dashboard/sellerOrders/:orderId" element={<SellerOrderDetails/>} />
+      <Route path="/buyer/orders" element={<BuyerOrders/>} />
+      <Route path="/seller/orders" element={<SellerOrders/>} />
+      <Route path="/buyer/orders/:orderId" element={<BuyerOrderDetails />} />
+      <Route path="/seller/orders/:orderId" element={<SellerOrderDetails/>} />
 
       <Route path="/products" element={<ProductList/>}/>
       <Route path='/product-details/:id' element={<ProductDetails/>}></Route>

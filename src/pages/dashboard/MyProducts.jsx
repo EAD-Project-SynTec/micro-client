@@ -1,10 +1,16 @@
 import React from 'react'
 
-
-const MyProducts = () => {
+import MyProductsTable from './MyProductsTable';
+export function MyProducts() {
   return (
-    <div></div>
-  )
+    <>
+      <div >
+           <MyProductsTable/>
+      </div>
+     
+    </>
+  );
+
 }
 
-export default MyProducts
+export default MyProducts;

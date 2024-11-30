@@ -1,25 +1,57 @@
-import axiosInstance from "@/axiosConfig";
+
+import axios from 'axios';
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8081',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+
+export const getProducts = async (id) => {
+  try {
+    const response = await axiosInstance.get('/api/v1/product?user=customer');
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    throw error;
+  }
+};
+
 
 //function add products
 export const addProduct = async (formData) => {
-    try {
-        const response = await axiosInstance.post('/Product', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        return response.data;
-        
-    } catch (error) {
-        console.error('Error adding product:', error);
-        throw error;
-    }
+  console.log('FormData:', formData);
+  for (let pair of formData.entries()) {
+    console.log(`${pair[0]}, ${pair[1]}`); 
+  }
+
+  // Convert FormData to JSON
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+
+  try {
+    const response = await axiosInstance.post('/api/v1/product', jsonData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding product:', error);
+    throw error;
+  }
 };
+
 
 //function to get product details by ID
 export const getProductByID = async (id) => {
     try {
-        const response = await axiosInstance.get(`/Product/${id}`);
+        const response = await axiosInstance.get(`/api/v1/product/${id}`);
+
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);
@@ -30,7 +62,9 @@ export const getProductByID = async (id) => {
 //function to update product details
 export const updateProduct = async (id, formData) => {
     try {
-        const response = await axiosInstance.put(`Product/update/${id}`, formData);
+
+        const response = await axiosInstance.put(`/api/v1/product/${id}`, formData);
+
         return response.data;
     } catch (error) {
         console.error('Error updating product:', error);
@@ -154,10 +188,22 @@ export const getProductsBySellerID = async (id) => {
     }
 };
 
+  //function to get product list by seller ID
+  export const getProductsBySellerIDPage = async (id ,pageNumber,pageSize) => {
+    try {
+        const response = await axiosInstance.get(`/Product/farmer-product/${id}?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        throw error;
+    }
+};
   //function to get product list by seller ID  Product/${productId}
   export const deleteProduct = async (id) => {
     try {
-        const response = await axiosInstance.delete(`/Product/${id}`);
+        const response = await axiosInstance.delete(`/api/v1/product/${id}`);
+        console.log(response);
+
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);

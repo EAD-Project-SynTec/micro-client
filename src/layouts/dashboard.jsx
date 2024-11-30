@@ -5,6 +5,8 @@ import {
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
+import AddProducts from "@/pages/dashboard/AddProducts";
+import ProductUpdate from '../pages/dashboard/UpdateProduct';
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -28,6 +30,14 @@ export function Dashboard() {
                 <Route exact path={path} element={element} />
               ))
           )}
+        
+        <Route path="/add-products" element={<AddProducts />}>
+          {" "}
+        </Route>
+        <Route path="/update-product/:id" element={<ProductUpdate />}>
+          {" "}
+        </Route>
+        
         </Routes>
       </div>
     </div>

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { TbTruckDelivery } from "react-icons/tb";
-import { BsCoin } from "react-icons/bs";
 import { Badge, IconButton, Avatar, Select } from "@material-tailwind/react";
 import { HomeIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import SearchBar from "./SearchBar";
@@ -8,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import MainNavSide from "./MainNavSide";
 import {  getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
+import { jwtDecode } from "jwt-decode";   //public\img\log_img.png
+import logoImg from "../../../../public/img/log_img.png";
 import { jwtDecode } from "jwt-decode";
 import  { useCart } from "../cartProvider";
 
@@ -79,14 +79,13 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
 
   return (
     <>
-      <MainNavSide />
-      <div className="hidden md:grid grid-cols-4 gap-0 px-4 py-2">
+      <div className=" md:grid grid-cols-4 gap-0 px-4 py-2">
         <div className="">
           {/* image */}
           <div className="w-50 max-w-full px-8 ">
             <a href="/#" className="block w-full">
               <img
-                src="https://syntecblobstorage.blob.core.windows.net/bussinescard/large-removebg-preview 1.png"
+                src={logoImg}
                 alt="logo"
                 className="dark:hidden"
               />
@@ -103,7 +102,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
                 <ul className="block lg:flex items-start text-sm">
                   <ListItem NavLink="/#">Home</ListItem>
                   <ListItem NavLink="/#">About</ListItem>
-                  <ListItem NavLink="/buyers/my-orders">My Orders</ListItem>
+                  <ListItem NavLink="/dashboard">My Orders</ListItem>
                   <ListItem NavLink="/#">Offers</ListItem>
                 </ul>
               </div>
@@ -114,6 +113,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
                 <SearchBar onSearch={handleSearch} />
                 <div className="hidden justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
                   <Badge content={cartCount} color="green" className="mx-3">
+
                     <IconButton color="gray" variant="outlined" className="rounded-full"
                       onClick={() => navigate("/cart")}
                     >

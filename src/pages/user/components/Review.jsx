@@ -26,7 +26,7 @@ const Review = ({ id }) => {
         <div className="bg-white shadow-lg rounded-lg p-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Customer Reviews</h2>
-            <Rating value={averageRating} readOnly />
+            {/* <Rating value={averageRating} readOnly /> */}
           </div>
           <div className="pt-4">
             <AllReview reviews={reviews} />

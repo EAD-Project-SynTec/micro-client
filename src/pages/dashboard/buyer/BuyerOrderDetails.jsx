@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getOrderDetails } from "@/services/orderService";
+import { addReview } from "@/services/productServices";
 import {
   Card,
   CardBody,
   CardHeader,
   Button,
   Typography,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Textarea,
+  Rating,
 } from "@material-tailwind/react";
 import MainNav from "@/pages/user/components/MainNav";
 
@@ -14,13 +21,16 @@ const BuyerOrderDetails = () => {
   const { orderId } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
   const [error, setError] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [reviewMessage, setReviewMessage] = useState("");
 
   useEffect(() => {
-    const fetchOrderDetails = () => {
+    const fetchOrderDetails = async () => {
       try {
-        getOrderDetails(orderId).then((response) => {
-          setOrderDetails(response.data);
-        });
+        const response = await getOrderDetails(orderId);
+        setOrderDetails(response.data);
       } catch (err) {
         console.error(err);
         setError("Failed to fetch order details.");
@@ -30,13 +40,24 @@ const BuyerOrderDetails = () => {
     fetchOrderDetails();
   }, [orderId]);
 
-  if (error) {
-    return <Typography color="red">{error}</Typography>;
-  }
+  const openReviewDialog = (item) => {
+    setCurrentItem(item);
+    setRating(0);
+    setReviewMessage("");
+    setShowDialog(true);
+  };
 
-  if (!orderDetails) {
-    return <Typography>Loading...</Typography>;
-  }
+  const closeReviewDialog = () => {
+    setShowDialog(false);
+  };
+
+  const handleSubmitReview = () => {
+    console.log("Submitting review for:", currentItem.productID);
+    console.log("Rating:", rating, "Message:", reviewMessage);
+    // Add logic to send review data to your backend here.
+    const res = addReview({productId: currentItem.productID, comment: reviewMessage, rating: rating});
+    closeReviewDialog();
+  };
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -57,7 +78,6 @@ const BuyerOrderDetails = () => {
 
     return (
       <div className="mb-6">
-        {/* Status Labels */}
         <div className="flex justify-start mb-2">
           {steps.map((step, index) => (
             <div
@@ -76,12 +96,9 @@ const BuyerOrderDetails = () => {
             </div>
           ))}
         </div>
-
-        {/* Progress Tracker */}
         <div className="flex items-center justify-between">
           {steps.map((step, index) => (
             <div key={step} className="flex items-center w-full">
-              {/* Step Circle */}
               <div
                 className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
                   index <= currentStep ? "bg-green-500" : "bg-gray-300"
@@ -89,8 +106,6 @@ const BuyerOrderDetails = () => {
               >
                 {index + 1}
               </div>
-
-              {/* Connector */}
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 ${
@@ -104,6 +119,14 @@ const BuyerOrderDetails = () => {
       </div>
     );
   };
+
+  if (error) {
+    return <Typography color="red">{error}</Typography>;
+  }
+
+  if (!orderDetails) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <div>
@@ -124,11 +147,7 @@ const BuyerOrderDetails = () => {
         <CardBody>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="mb-6">
-              <Typography
-                variant="h6"
-                className="font-bold"
-                color="blue-gray"
-              >
+              <Typography variant="h6" className="font-bold" color="blue-gray">
                 Order Reference: {orderDetails.id}
               </Typography>
               <Typography color="blue-gray">
@@ -140,13 +159,11 @@ const BuyerOrderDetails = () => {
                 <strong>Total Price: </strong>Rs.
                 {calculateTotalPrice(orderDetails.items)}
               </Typography>
-              
             </div>
           </div>
           <Typography variant="h6" color="blue-gray">
-                <strong>Status </strong>
-              </Typography>
-          {/* Updated Status Tracker */}
+            <strong>Status </strong>
+          </Typography>
           {renderStatusTracker(orderDetails.status)}
 
           <div>
@@ -162,11 +179,7 @@ const BuyerOrderDetails = () => {
                       alt={item.productName}
                       className="w-full h-32 object-cover rounded"
                     />
-                    <Typography
-                      variant="h5"
-                      color="blue-gray"
-                      className="text-center"
-                    >
+                    <Typography variant="h5" color="blue-gray" className="text-center">
                       {item.productName}
                     </Typography>
                     <Typography className="text-center" variant="h6">
@@ -182,11 +195,8 @@ const BuyerOrderDetails = () => {
                       variant="gradient"
                       disabled={orderDetails.status.toLowerCase() !== "delivered"}
                       className="w-full"
-                      color={
-                        orderDetails.status.toLowerCase() === "delivered"
-                          ? "green"
-                          : "gray"
-                      }
+                      color={orderDetails.status.toLowerCase() === "delivered" ? "green" : "gray"}
+                      onClick={() => openReviewDialog(item)}
                     >
                       Add Review
                     </Button>
@@ -197,6 +207,41 @@ const BuyerOrderDetails = () => {
           </div>
         </CardBody>
       </Card>
+
+      {/* Review Dialog */}
+      <Dialog open={showDialog} handler={closeReviewDialog}>
+        <DialogHeader>Write a Review</DialogHeader>
+        <DialogBody>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <Typography variant="h6">Rating:</Typography>
+              <Rating
+                value={rating}
+                onChange={(newRating) => setRating(newRating)}
+                total={5}
+              />
+            </div>
+            <Textarea
+              label="Review Message"
+              placeholder="Write your review here..."
+              value={reviewMessage}
+              onChange={(e) => setReviewMessage(e.target.value)}
+            />
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={closeReviewDialog}>
+            Cancel
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={handleSubmitReview}
+          >
+            Submit
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 };

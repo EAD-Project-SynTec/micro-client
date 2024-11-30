@@ -17,6 +17,7 @@ import { addToCartProducts, getProductDetails } from './services/productServices
 import { jwtDecode } from 'jwt-decode';
 import Review from './components/Review';
 import { useCart } from './cartProvider';
+import CartServices from '@/services/cartServices';
 
 function Icon() {
   return (
@@ -121,11 +122,11 @@ const ProductDetails = () => {
       imageUrl: product.imageUrl,
       name: product.name
     };
-  
+    
     console.log('Adding to cart:', data);
     setLoading(true);
-    axios.post('http://localhost:8084/api/v1/cart', data)
-      .then(response => {
+    CartServices.addToCart(data)
+    .then(response => {
         console.log('Response:', response.data);
         setCartCount(prevCount => prevCount + 1);
         // console.log('Cart count:', prevCount);	

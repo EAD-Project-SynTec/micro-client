@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { PencilIcon, UserPlusIcon, } from "@heroicons/react/24/solid";
 import { HiTrash } from "react-icons/hi2";
 import Swal from 'sweetalert2'
-import { Card, CardHeader, Typography, Button, CardBody, CardFooter, Avatar, IconButton, Tooltip, } from "@material-tailwind/react";
-import { deleteProduct, getProductsBySellerID, getProductsBySellerIDPage,getProducts } from '@/services/productServices';
-import { jwtDecode } from 'jwt-decode';
-const TABLE_HEAD = ["Product", "Product Number", "Category", "Unit Price", "Stock", "Popularity Order", "", ""];
+import { Card, CardHeader, Typography, Button, CardBody, Avatar, IconButton, Tooltip, } from "@material-tailwind/react";
+import { deleteProduct,getProducts } from '@/services/productServices';
+const TABLE_HEAD = ["Product", "Product Number", "Category", "Unit Price", "Stock", "Ratings", "", ""];
 
 const MyProductsTable = () => {
   const navigate = useNavigate();
@@ -51,24 +50,7 @@ const MyProductsTable = () => {
       console.error('Error fetching cart details:', error);
     }
   };
-  // //handle page increase
-  // const handlePageIncrease = () => {
-  //   if (page >= totalPages) {
-  //     return;
-  //   }
-  //   setPage(page + 1);
-  //   fetchProducts(page + 1);
-  // }
-
-  // //handle page decrease
-  // const handlePageDecrease = () => {
-  //   if (page <= 1) {
-  //     return;
-  //   }
-  //   setPage(page - 1);
-  //   fetchProducts(page - 1);
-  // };
-  //delete product
+ 
   const deleteConfirmHandler = async (productId) => {
     const result = await deleteProduct(productId);
     fetchProducts(page);
@@ -78,7 +60,6 @@ const MyProductsTable = () => {
   }, []);
   return (
     <div>
-
       {/* Header card */}
       <Card className="h-full w-full mt-4">
         <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -196,7 +177,7 @@ const MyProductsTable = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        2
+                        {p.rating}
                       </Typography>
                     </td>
 
@@ -227,23 +208,6 @@ const MyProductsTable = () => {
             </tbody>
           </table>
         </CardBody>
-        {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Typography variant="small" color="blue-gray" className="font-normal">
-            Page {page} of {totalPages}
-          </Typography>
-          <div className="flex gap-2">
-            <Button variant="outlined" size="sm"
-             onClick={handlePageDecrease}
-             >
-              Previous
-            </Button>
-            <Button variant="outlined" size="sm" 
-            onClick={handlePageIncrease}
-            >
-              Next
-            </Button>
-          </div>
-        </CardFooter> */}
       </Card>
 
     </div>

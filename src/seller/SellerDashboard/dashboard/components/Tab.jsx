@@ -17,17 +17,13 @@ export default function Tab({ defaultTab }) {
 
   // Fetch data on component mount
   useEffect(() => {
-    const token = sessionStorage.getItem('jwtToken');
-        const decodedData = jwtDecode(token);
-        const sellerID = decodedData.email;
-    const fetchOrderDetails = async () => {
-      try {
-        const details = await getAllFarmerOrders(sellerID);
-        setData(details);
-      } catch (error) {
-        console.error("Error fetching order details:", error);
-      }
-    };
+    fetch("http://localhost:8084/api/v1/order")
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => {
+        setError("Failed to fetch orders");
+        console.error(error);
+      });
     fetchOrderDetails();
   }, []);
 

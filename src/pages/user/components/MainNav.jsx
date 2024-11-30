@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { TbTruckDelivery } from "react-icons/tb";
-import { BsCoin } from "react-icons/bs";
 import { Badge, IconButton, Avatar, Select } from "@material-tailwind/react";
 import { HomeIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import SearchBar from "./SearchBar";
@@ -8,16 +6,31 @@ import { Link, useNavigate } from "react-router-dom";
 import MainNavSide from "./MainNavSide";
 import {  getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
+import logoImg from "../../../../public/img/log_img.png";
 import { jwtDecode } from "jwt-decode";
+import  { useCart } from "../cartProvider";
 
-const MainNav = ({ getSearchResults }) => {
+const MainNav = ({ getSearchResults,cartTotal }) => {
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
+  // const [cartCount, setCartCount] = useState(0);
   const [userName, setUserName] = useState('');
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
-  const email = "kwalskinick@gmail.com"; // Replace with the actual email
+  const email = "kwalskinick@gmail.com"; 
+  const { cartCount } = useCart();
+  // const getCartTotal = () => {
+  //   return localStorage.getItem('cartTotal') || 0;
+  // }
+  // Usage example in another component:
+// const [cartNumber, setCartNumber] = useState(getCartTotal());
 
+// To keep it in sync, use useEffect
+// useEffect(() => {
+//   const total = getCartTotal();
+//   setCartNumber(total);
+// }, [cartTotal]); // Add dependencies if needed
+
+  // const cartNumber = cartTotal?cartTotal:0;
   // useEffect(() => {
   //   try {
   //     const token = sessionStorage.getItem('jwtToken');
@@ -65,14 +78,13 @@ const MainNav = ({ getSearchResults }) => {
 
   return (
     <>
-      <MainNavSide />
-      <div className="hidden md:grid grid-cols-4 gap-0 px-4 py-2">
+      <div className=" md:grid grid-cols-4 gap-0 px-4 py-2">
         <div className="">
           {/* image */}
           <div className="w-50 max-w-full px-8 ">
             <a href="/#" className="block w-full">
               <img
-                src="https://syntecblobstorage.blob.core.windows.net/bussinescard/large-removebg-preview 1.png"
+                src={logoImg}
                 alt="logo"
                 className="dark:hidden"
               />
@@ -89,7 +101,7 @@ const MainNav = ({ getSearchResults }) => {
                 <ul className="block lg:flex items-start text-sm">
                   <ListItem NavLink="/#">Home</ListItem>
                   <ListItem NavLink="/#">About</ListItem>
-                  <ListItem NavLink="/buyers/my-orders">My Orders</ListItem>
+                  <ListItem NavLink="/dashboard">My Orders</ListItem>
                   <ListItem NavLink="/#">Offers</ListItem>
                 </ul>
               </div>
@@ -99,7 +111,8 @@ const MainNav = ({ getSearchResults }) => {
               <div className="flex items-center justify-end px-4 ">
                 <SearchBar onSearch={handleSearch} />
                 <div className="hidden justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
-                  <Badge  color="green" className="mx-3">
+                  <Badge content={cartCount} color="green" className="mx-3">
+
                     <IconButton color="gray" variant="outlined" className="rounded-full"
                       onClick={() => navigate("/cart")}
                     >

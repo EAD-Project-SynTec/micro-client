@@ -16,6 +16,10 @@ import PlaceOrderModal from './components/PlaceOrderModal';
 import { addToCartProducts, getProductDetails } from './services/productServices';
 import { jwtDecode } from 'jwt-decode';
 import Review from './components/Review';
+import { useCart } from './cartProvider';
+import CartServices from '@/services/cartServices';
+import AddOrderButton from '../dashboard/buyer/AddOrderButton';
+
 function Icon() {
   return (
     <svg
@@ -44,6 +48,8 @@ const ProductDetails = () => {
   const [modelOpen, setModelOpen] = useState(false);
   const navigate = useNavigate();
   const [buyerID, setBuyerID] = useState('');
+  const {setCartCount} = useCart();
+
   // useEffect(() => {
   //   try{
   //     const token = sessionStorage.getItem('jwtToken');
@@ -95,7 +101,9 @@ const ProductDetails = () => {
     } catch (error) {
       console.error('An error occurred:', error);
     }
-  };
+  
+  
+    };
   const handleSelectDestination = (destination) => {
     setDestination(destination);
   }
@@ -107,22 +115,26 @@ const ProductDetails = () => {
   const handleSuccessOrder = (success) => {
     setSuccessOrder(success);
   }
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = () => {
     console.log(product)
     const data = {
       customerEmail: 'kwalskinick@gmail.com',
       price: product.price,
       productID: product.id,
-      quantity: product.quantity,
+      quantity: selectedQuantity,
       imageUrl: product.imageUrl,
       name: product.name
     };
-  
+    
     console.log('Adding to cart:', data);
-  
-    axios.post('http://localhost:8084/api/v1/cart', data)
-      .then(response => {
+    setLoading(true);
+    CartServices.addToCart(data)
+    .then(response => {
         console.log('Response:', response.data);
+        setCartCount(prevCount => prevCount + 1);
+        // console.log('Cart count:', prevCount);	
+        setOpen(true);
+        setLoading(false);
       })
       .catch(error => {
         console.error('There was an error adding to the cart!', error);
@@ -205,6 +217,7 @@ const ProductDetails = () => {
 
   const handleQuantityChange = (newQuantity) => {
     setSelectedQuantity(newQuantity);
+    console.log(newQuantity);
   };
 
   return (
@@ -260,10 +273,6 @@ const ProductDetails = () => {
                 {/* product name */}
                 <div>
                   <h1 className='text-2xl md:text-3xl font-semibold text-gray-800'>{product.name}</h1>
-                  <div className="mb-3 flex md:gap-5 gap-3 items-center md:justify-between">
-                    <Rating value={4} readonly />
-                    <p className=' text-sm text-gray-700'>Reviews (4)</p>
-                  </div>
                 </div>
                 <p className=' flex items-center gap-3 font-semibold text-gray-600 text-lg'><span><FaLocationDot /></span>{product.farmerAddL3}</p>
               </div>
@@ -282,13 +291,14 @@ const ProductDetails = () => {
                 <ProductQuantity minimumQuantity={1} availableStock={product.quantity} onQuantityChange={handleQuantityChange} />
               </div>
               <div className='flex gap-3 md:justify-end mt-8'>
-              <button className='bg-green-500 border-green-500 border rounded-full inline-flex items-center 
+              {/*<button className='bg-green-500 border-green-500 border rounded-full inline-flex items-center 
                   justify-center py-2 px-8 text-center text-sm font-medium text-white
                   disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'
         onClick={handleModalOPen}
->
+> 
   Buy Now
-</button>
+</button>*/}<AddOrderButton productId={id} />
+
 
 <button className='border-green-500 border rounded-full inline-flex items-center 
                   justify-center py-2 px-7 text-center text-sm font-medium text-green-500 hover:bg-green-500/10

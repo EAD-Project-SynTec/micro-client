@@ -1,48 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { getOrderDetails } from "@/services/orderService";
+import { addReview } from "@/services/productServices";
 import {
   Card,
   CardBody,
   CardHeader,
+  Button,
   Typography,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Textarea,
+  Rating,
 } from "@material-tailwind/react";
+import MainNav from "@/pages/user/components/MainNav";
 
 const BuyerOrderDetails = () => {
-  const { orderId } = useParams(); // Extract orderId from URL
+  const { orderId } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
   const [error, setError] = useState("");
-  const [newStatus, setNewStatus] = useState("");
-  const [userId, setUserId] = useState("");
-  const [userDetails, setUserDetails] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [reviewMessage, setReviewMessage] = useState("");
 
-  // Fetch order details on mount
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8084/api/v1/order/getOrderDetails/${orderId}`
-        );
+        const response = await getOrderDetails(orderId);
         setOrderDetails(response.data);
-        setUserId(response.data.userId); // Update userId after fetching order details
-        console.log(response.data.userId);
-
-        // Now, fetch user details using the userId from the first API call
-        const fetchUserDetails = async () => {
-          try {
-            const userResponse = await axios.get(
-              `http://localhost:8082/api/user/${response.data.userId}` // Use the userId from the order details
-            );
-            setUserDetails(userResponse.data);
-            console.log(userResponse.data);
-          } catch (err) {
-            console.error(err);
-            setError("Failed to fetch user details.");
-          }
-        };
-
-        // Call fetchUserDetails after order details are successfully fetched
-        fetchUserDetails();
       } catch (err) {
         console.error(err);
         setError("Failed to fetch order details.");
@@ -50,16 +38,26 @@ const BuyerOrderDetails = () => {
     };
 
     fetchOrderDetails();
-  }, [orderId]); // This will run when orderId changes
+  }, [orderId]);
 
+  const openReviewDialog = (item) => {
+    setCurrentItem(item);
+    setRating(0);
+    setReviewMessage("");
+    setShowDialog(true);
+  };
 
-  if (error) {
-    return <Typography color="red">{error}</Typography>;
-  }
+  const closeReviewDialog = () => {
+    setShowDialog(false);
+  };
 
-  if (!orderDetails || !userDetails) {
-    return <Typography>Loading...</Typography>;
-  }
+  const handleSubmitReview = () => {
+    console.log("Submitting review for:", currentItem.productID);
+    console.log("Rating:", rating, "Message:", reviewMessage);
+    // Add logic to send review data to your backend here.
+    const res = addReview({productId: currentItem.productID, comment: reviewMessage, rating: rating});
+    closeReviewDialog();
+  };
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -67,77 +65,141 @@ const BuyerOrderDetails = () => {
   };
 
   const calculateTotalPrice = (items) => {
-    return items.reduce(
-      (total, item) => total + item.quantity * item.price,
-      0
-    ).toFixed(2);
+    return items
+      .reduce((total, item) => total + item.quantity * item.price, 0)
+      .toFixed(2);
   };
 
+  const renderStatusTracker = (status) => {
+    const steps = ["Pending", "Processing", "Delivered"];
+    const currentStep = steps.findIndex(
+      (step) => step.toLowerCase() === status.toLowerCase()
+    );
+
+    return (
+      <div className="mb-6">
+        <div className="flex justify-start mb-2">
+          {steps.map((step, index) => (
+            <div
+              key={step}
+              className="text-left flex-1"
+              style={{ minWidth: "100px" }}
+            >
+              <Typography
+                variant="small"
+                className={`font-bold ${
+                  index <= currentStep ? "text-green-500" : "text-gray-500"
+                }`}
+              >
+                {step}
+              </Typography>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={step} className="flex items-center w-full">
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
+                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                {index + 1}
+              </div>
+              {index < steps.length - 1 && (
+                <div
+                  className={`flex-1 h-1 ${
+                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                ></div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  if (error) {
+    return <Typography color="red">{error}</Typography>;
+  }
+
+  if (!orderDetails) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <div>
-      <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg">
+      <MainNav/>
+      <Card
+        className="w-full max-w-4xl mx-auto my-8 shadow-lg"
+        style={{ backgroundColor: "#f5f7fa" }}
+      >
         <CardHeader
-          className="bg-blue-gray-50 p-4 text-center"
+          className="bg-green-500 p-4 text-center"
           floated={false}
           shadow={false}
         >
-          <Typography variant="h4" color="blue-gray">
+          <Typography variant="h4" color="white">
             Order Details
           </Typography>
         </CardHeader>
         <CardBody>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-6">
-            <Typography variant="h6" className="font-bold">
-              Order Reference: {orderDetails.id}
-            </Typography>
-            <Typography>
-            <strong>Date Created: </strong>{formatDate(orderDetails.dateCreated)}
-            </Typography>
-            <Typography><strong>Status: </strong>{orderDetails.status}</Typography>
-            <Typography >
-            <strong>Total Price: </strong>${calculateTotalPrice(orderDetails.items)}
-            </Typography>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mb-6">
+              <Typography variant="h6" className="font-bold" color="blue-gray">
+                Order Reference: {orderDetails.id}
+              </Typography>
+              <Typography color="blue-gray">
+                <strong>Date Created: </strong>
+                {formatDate(orderDetails.dateCreated)}
+              </Typography>
 
-          {/* Display user details */}
-          <div className="mb-6">
-            <Typography variant="h6" className="font-bold">
-              Buyer Details:
-            </Typography>
-            <Typography><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</Typography>
-                <Typography><strong>Email:</strong> {userDetails.email}</Typography>
-                <Typography><strong>Address:</strong> {userDetails.addressLine1}, {userDetails.addressLine2}, {userDetails.addressLine3}</Typography>
-                <Typography><strong>Phone Number:</strong> {userDetails.phoneNumber}</Typography>
-        
+              <Typography color="blue-gray">
+                <strong>Total Price: </strong>Rs.
+                {calculateTotalPrice(orderDetails.items)}
+              </Typography>
+            </div>
           </div>
-          </div>
+          <Typography variant="h6" color="blue-gray">
+            <strong>Status </strong>
+          </Typography>
+          {renderStatusTracker(orderDetails.status)}
 
           <div>
-            <Typography variant="h5" color="blue-gray" className="mb-4">
+            <Typography variant="h6" color="blue-gray" className="mb-4">
               Items
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {orderDetails.items.map((item, index) => (
-                <Card
-                  key={index}
-                  className="border border-blue-gray-100 shadow-sm"
-                >
+                <Card key={index} className="shadow-lg">
                   <CardBody className="flex flex-col items-start gap-4">
                     <img
                       src={item.imageUrl}
                       alt={item.productName}
                       className="w-full h-32 object-cover rounded"
                     />
-                    <Typography variant="h6" color="blue-gray" className="text-center">
+                    <Typography variant="h5" color="blue-gray" className="text-center">
                       {item.productName}
                     </Typography>
-                    <Typography className="text-center">
+                    <Typography className="text-center" variant="h6">
                       Category: {item.category}
                     </Typography>
-                    <Typography>Quantity: {item.quantity}</Typography>
-                    <Typography>Price: ${item.price}</Typography>
+                    <Typography variant="h6">
+                      Quantity: {item.quantity}
+                    </Typography>
+                    <Typography variant="h6">
+                      Price: Rs.{item.price}
+                    </Typography>
+                    <Button
+                      variant="gradient"
+                      disabled={orderDetails.status.toLowerCase() !== "delivered"}
+                      className="w-full"
+                      color={orderDetails.status.toLowerCase() === "delivered" ? "green" : "gray"}
+                      onClick={() => openReviewDialog(item)}
+                    >
+                      Add Review
+                    </Button>
                   </CardBody>
                 </Card>
               ))}
@@ -145,6 +207,41 @@ const BuyerOrderDetails = () => {
           </div>
         </CardBody>
       </Card>
+
+      {/* Review Dialog */}
+      <Dialog open={showDialog} handler={closeReviewDialog}>
+        <DialogHeader>Write a Review</DialogHeader>
+        <DialogBody>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <Typography variant="h6">Rating:</Typography>
+              <Rating
+                value={rating}
+                onChange={(newRating) => setRating(newRating)}
+                total={5}
+              />
+            </div>
+            <Textarea
+              label="Review Message"
+              placeholder="Write your review here..."
+              value={reviewMessage}
+              onChange={(e) => setReviewMessage(e.target.value)}
+            />
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={closeReviewDialog}>
+            Cancel
+          </Button>
+          <Button
+            variant="gradient"
+            color="green"
+            onClick={handleSubmitReview}
+          >
+            Submit
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 };

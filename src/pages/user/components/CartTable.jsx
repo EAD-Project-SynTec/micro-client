@@ -5,9 +5,13 @@ import Swal from 'sweetalert2'
 import { MdOutlineClose } from "react-icons/md";
 import { deleteCartItem } from "@/services/productServices";
 import { jwtDecode } from "jwt-decode";
+import { useCart } from "../cartProvider";
+import CartServices from "@/services/cartServices";
+
 const TABLE_HEAD = ["Item", "Price", "Qty", "Sub Total", ""];   
-export function CartTable({ cartItems,cartEmail}) {
+export function CartTable({ cartItems,cartEmail,setCartUpdate}) {
   const[cartItemss, setCartItems] = useState([]);
+  const { setCartCount } = useCart();
   console.log(cartEmail)
   const PopupHandler = (productId) => {
     // Find the selected item in the cart using the provided productId
@@ -34,12 +38,11 @@ export function CartTable({ cartItems,cartEmail}) {
         console.log(selectedItem);
   
         // Make the DELETE request to the backend with the object as the body
-        axios
-          .delete(`http://localhost:8084/api/v1/cart`, { data: obj }) // Pass the data in the body of the request
-          .then((response) => {
+        CartServices.removeFromCart(obj)
+        .then((response) => {
             console.log("Item deleted successfully", response);
-  
-            // Show success alert
+            setCartCount(prevCount => prevCount - 1);
+            setCartUpdate(prev => prev + 1);
             Swal.fire({
               title: "Removed!",
               text: "Your item has been removed.",

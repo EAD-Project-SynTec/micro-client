@@ -73,7 +73,7 @@ export const editReview = async (formData, reviewId) => {
 
 export const getReviewsForProduct = async (productId) => {
     try {
-        const response = await axiosInstance.get(`/review/${encodeURI(productId)}`);
+        const response = await axiosInstance.get(`/Review/product-reviews/${encodeURI(productId)}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching products to review:', error);

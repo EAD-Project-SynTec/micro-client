@@ -3,13 +3,12 @@ import { Card, CardBody, Typography, Button } from "@material-tailwind/react";
 import Swal from "sweetalert2";
 import { Pickup_Drop_Detail } from "./Pickup_Drop_Detail";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios"; // HTTP client for making API requests
+import axios from "axios"; 
 
 const OrderDetail = () => {
-  const { id } = useParams(); // Get the id parameter from the URL using useParams hook
+  const { id } = useParams(); 
   const navigate = useNavigate();
-  const [data, setData] = useState([]); // State variable to hold order details
-
+  const [data, setData] = useState([]); 
   // Fetch order details
   useEffect(() => {
     axios

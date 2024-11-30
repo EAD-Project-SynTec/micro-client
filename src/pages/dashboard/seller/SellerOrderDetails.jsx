@@ -11,6 +11,7 @@ import {
   Option,
 } from "@material-tailwind/react";
 import { updateStatus } from "@/services/orderService";
+import Swal from "sweetalert2";
 
 const SellerOrderDetails = () => {
   const { orderId } = useParams(); // Extract orderId from URL
@@ -57,19 +58,34 @@ const SellerOrderDetails = () => {
   }, [orderId]); 
 
 
-const updateOrderStatus = async () => {
-  try {
-    // Use the updateStatus function from the service
-    await updateStatus(orderDetails.id, newStatus);
-
-    // Update the local state with the new status
-    setOrderDetails((prev) => ({ ...prev, status: newStatus }));
-    alert("Order status updated successfully!");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update order status.");
-  }
-};
+  const updateOrderStatus = async () => {
+    try {
+      // Use the updateStatus function from the service
+      await updateStatus(orderDetails.id, newStatus);
+  
+      // Update the local state with the new status
+      setOrderDetails((prev) => ({ ...prev, status: newStatus }));
+  
+      // Show success alert using SweetAlert
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Order status updated successfully!",
+        confirmButtonText: "OK",
+      });
+    } catch (err) {
+      console.error(err);
+  
+      // Show error alert using SweetAlert
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update order status.",
+        confirmButtonText: "Try Again",
+      });
+    }
+  };
+  
 
 
   if (error) {

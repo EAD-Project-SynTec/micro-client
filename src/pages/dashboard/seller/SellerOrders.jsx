@@ -9,11 +9,11 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-
+import { getAllOrders} from "@/services/orderService";
 const SellerOrders = () => {
   const TABLE_HEAD = [
     "Order Reference",
-    "Buyer ID",
+    "Buyer Email",
     "Date Created",
     "Status",
     "Product",
@@ -194,7 +194,7 @@ const SellerOrders = () => {
                         return (
                           <tr
                             key={`${order.id}-${item.productID}-${index}`}
-                            onClick={() => handleRowClick(order.id)}
+                            onClick={() => handleRowClick(order.orderId)}
                             className="cursor-pointer hover:bg-gray-200" // Hover effect
                           >
                             {index === 0 && (
@@ -204,7 +204,7 @@ const SellerOrders = () => {
                                   rowSpan={order.items.length}
                                 >
                                   <Typography variant="small" color="blue-gray">
-                                    {order.id}
+                                    {order.orderId}
                                   </Typography>
                                 </td>
                                 <td

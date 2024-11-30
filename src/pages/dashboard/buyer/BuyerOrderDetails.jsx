@@ -1,40 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { getOrderDetails } from "@/services/orderService";
 import {
   Card,
   CardBody,
   CardHeader,
+  Button,
   Typography,
 } from "@material-tailwind/react";
 
 const BuyerOrderDetails = () => {
-  const {orderId } = useParams(); // Extract orderId from URL
+  const { orderId } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
   const [error, setError] = useState("");
-  const [newStatus, setNewStatus] = useState("");
-  const [userId, setUserId] = useState("");
 
-  // Fetch order details on mount
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const fetchOrderDetails = () => {
       try {
-        console.log(orderId)
-        const response = await axios.get(
-          `http://localhost:8084/api/v1/order/${orderId}`
-        );
-        setOrderDetails(response.data);
-        setUserId(response.data.userId); // Update userId after fetching order details
-        console.log(response.data.userId);
+        getOrderDetails(orderId).then((response) => {
+          setOrderDetails(response.data);
+        });
       } catch (err) {
         console.error(err);
         setError("Failed to fetch order details.");
       }
     };
-  
+
     fetchOrderDetails();
   }, [orderId]);
-
 
   if (error) {
     return <Typography color="red">{error}</Typography>;
@@ -50,16 +43,73 @@ const BuyerOrderDetails = () => {
   };
 
   const calculateTotalPrice = (items) => {
-    return items.reduce(
-      (total, item) => total + item.quantity * item.price,
-      0
-    ).toFixed(2);
+    return items
+      .reduce((total, item) => total + item.quantity * item.price, 0)
+      .toFixed(2);
   };
 
+  const renderStatusTracker = (status) => {
+    const steps = ["Pending", "Processing", "Delivered"];
+    const currentStep = steps.findIndex(
+      (step) => step.toLowerCase() === status.toLowerCase()
+    );
+
+    return (
+      <div className="mb-6">
+        {/* Status Labels */}
+        <div className="flex justify-start mb-2">
+          {steps.map((step, index) => (
+            <div
+              key={step}
+              className="text-left flex-1"
+              style={{ minWidth: "100px" }}
+            >
+              <Typography
+                variant="small"
+                className={`font-bold ${
+                  index <= currentStep ? "text-green-500" : "text-gray-500"
+                }`}
+              >
+                {step}
+              </Typography>
+            </div>
+          ))}
+        </div>
+
+        {/* Progress Tracker */}
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={step} className="flex items-center w-full">
+              {/* Step Circle */}
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
+                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                {index + 1}
+              </div>
+
+              {/* Connector */}
+              {index < steps.length - 1 && (
+                <div
+                  className={`flex-1 h-1 ${
+                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                ></div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div>
-      <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg" style={{ backgroundColor: '#f5f7fa' }}>
+      <Card
+        className="w-full max-w-4xl mx-auto my-8 shadow-lg"
+        style={{ backgroundColor: "#f5f7fa" }}
+      >
         <CardHeader
           className="bg-green-500 p-4 text-center"
           floated={false}
@@ -70,46 +120,74 @@ const BuyerOrderDetails = () => {
           </Typography>
         </CardHeader>
         <CardBody>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-6">
-            <Typography variant="h6" className="font-bold" color="blue-gray">
-              Order Reference: {orderDetails.id}
-            </Typography>
-            <Typography color="blue-gray">
-            <strong>Date Created: </strong>{formatDate(orderDetails.dateCreated)}
-            </Typography>
-            <Typography color="blue-gray"><strong>Status: </strong>{orderDetails.status}</Typography>
-            <Typography color="blue-gray">
-            <strong>Total Price: </strong>${calculateTotalPrice(orderDetails.items)}
-            </Typography>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mb-6">
+              <Typography
+                variant="h6"
+                className="font-bold"
+                color="blue-gray"
+              >
+                Order Reference: {orderDetails.id}
+              </Typography>
+              <Typography color="blue-gray">
+                <strong>Date Created: </strong>
+                {formatDate(orderDetails.dateCreated)}
+              </Typography>
 
+              <Typography color="blue-gray">
+                <strong>Total Price: </strong>Rs.
+                {calculateTotalPrice(orderDetails.items)}
+              </Typography>
+              
+            </div>
           </div>
+          <Typography variant="h6" color="blue-gray">
+                <strong>Status </strong>
+              </Typography>
+          {/* Updated Status Tracker */}
+          {renderStatusTracker(orderDetails.status)}
 
           <div>
-            <Typography variant="h5" color="blue-gray" className="mb-4">
+            <Typography variant="h6" color="blue-gray" className="mb-4">
               Items
             </Typography>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {orderDetails.items.map((item, index) => (
-                <Card
-                  key={index}
-                  className="shadow-lg "
-                >
+                <Card key={index} className="shadow-lg">
                   <CardBody className="flex flex-col items-start gap-4">
                     <img
                       src={item.imageUrl}
                       alt={item.productName}
                       className="w-full h-32 object-cover rounded"
                     />
-                    <Typography variant="h5" color="blue-gray" className="text-center">
+                    <Typography
+                      variant="h5"
+                      color="blue-gray"
+                      className="text-center"
+                    >
                       {item.productName}
                     </Typography>
                     <Typography className="text-center" variant="h6">
                       Category: {item.category}
                     </Typography>
-                    <Typography variant="h6">Quantity: {item.quantity}</Typography>
-                    <Typography variant="h6">Price: Rs.{item.price}</Typography>
+                    <Typography variant="h6">
+                      Quantity: {item.quantity}
+                    </Typography>
+                    <Typography variant="h6">
+                      Price: Rs.{item.price}
+                    </Typography>
+                    <Button
+                      variant="gradient"
+                      disabled={orderDetails.status.toLowerCase() !== "delivered"}
+                      className="w-full"
+                      color={
+                        orderDetails.status.toLowerCase() === "delivered"
+                          ? "green"
+                          : "gray"
+                      }
+                    >
+                      Add Review
+                    </Button>
                   </CardBody>
                 </Card>
               ))}

@@ -29,7 +29,7 @@ const BuyerOrders = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const location = useLocation();
   const navigate = useNavigate();
-  const userId = "userk"; // Assume this is the user ID
+  const userId = "kavin@gmail.com"; // Assume this is the user ID
 
   // Fetch all orders on component mount
   useEffect(() => {
@@ -259,7 +259,7 @@ const BuyerOrders = () => {
                                 rowSpan={order.items.length}
                               >
                                 <Typography variant="small" color="blue-gray">
-                                  ${calculateTotalPrice(order.items)}
+                                  Rs.{calculateTotalPrice(order.items)}
                                 </Typography>
                               </td>
                             </>

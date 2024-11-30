@@ -24,7 +24,7 @@ const SellerOrderDetails = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8084/api/v1/order/getOrderDetails/${orderId}`
+          `http://localhost:8084/api/v1/order/${orderId}`
         );
         setOrderDetails(response.data);
         setUserId(response.data.userId); // Update userId after fetching order details
@@ -91,6 +91,62 @@ const SellerOrderDetails = () => {
     ).toFixed(2);
   };
 
+  const renderStatusTracker = (status) => {
+    const steps = ["Pending", "Processing", "Delivered"];
+    const currentStep = steps.findIndex(
+      (step) => step.toLowerCase() === status.toLowerCase()
+    );
+
+    return (
+      <div className="mb-6">
+        {/* Status Labels */}
+        <div className="flex justify-start mb-2">
+          {steps.map((step, index) => (
+            <div
+              key={step}
+              className="text-left flex-1"
+              style={{ minWidth: "100px" }}
+            >
+              <Typography
+                variant="small"
+                className={`font-bold ${
+                  index <= currentStep ? "text-green-500" : "text-gray-500"
+                }`}
+              >
+                {step}
+              </Typography>
+            </div>
+          ))}
+        </div>
+
+        {/* Progress Tracker */}
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={step} className="flex items-center w-full">
+              {/* Step Circle */}
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
+                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                {index + 1}
+              </div>
+
+              {/* Connector */}
+              {index < steps.length - 1 && (
+                <div
+                  className={`flex-1 h-1 ${
+                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                ></div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
       <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg" style={{ backgroundColor: '#f5f7fa' }}>
@@ -112,10 +168,10 @@ const SellerOrderDetails = () => {
             <Typography color="blue-gray">
             <strong>Date Created: </strong>{formatDate(orderDetails.dateCreated)}
             </Typography>
-            <Typography color="blue-gray"><strong>Status: </strong>{orderDetails.status}</Typography>
             <Typography color="blue-gray">
-            <strong>Total Price: </strong>${calculateTotalPrice(orderDetails.items)}
+            <strong>Total Price: </strong>Rs.{calculateTotalPrice(orderDetails.items)}
             </Typography>
+            
           </div>
 
           {/* Display user details */}
@@ -131,7 +187,12 @@ const SellerOrderDetails = () => {
           </div>
           </div>
 
+          <Typography variant="h6" color="blue-gray"><strong>Status </strong></Typography>
+          {/* Updated Status Tracker */}
+          {renderStatusTracker(orderDetails.status)}
+
           <div className="mb-6">
+            
             <Typography variant="h6" color="blue-gray" >
               Change Status
             </Typography>
@@ -177,7 +238,7 @@ const SellerOrderDetails = () => {
                       Category: {item.category}
                     </Typography>
                     <Typography variant="h6">Quantity: {item.quantity}</Typography>
-                    <Typography variant="h6">Price: ${item.price}</Typography>
+                    <Typography variant="h6">Price: Rs.{item.price}</Typography>
                   </CardBody>
                 </Card>
               ))}

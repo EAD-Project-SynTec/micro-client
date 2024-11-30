@@ -13,7 +13,7 @@ const CheckoutCard = ({ cartData }) => {
     }, 0) : 0;
 
     // Calculate shipping cost
-    const shippingCost = 0;
+    const shippingCost = sumTotalPrices?200:0;
 
     // Handle checkout
     const handleCheckout = () => {
@@ -35,11 +35,11 @@ const CheckoutCard = ({ cartData }) => {
                 </div>
                 <div className='flex justify-between my-3 border-b-2 py-4 text-gray-600 font-semibold text-sm'>
                     <h1>Tax estimate :</h1>
-                    <p>Rs 0.00</p>
+                    <p>Rs {(sumTotalPrices/110).toFixed(2)}</p>
                 </div>
                 <div className='flex justify-between my-4 py-4 text-gray-800 font-semibold'>
                     <h1>Order Total :</h1>
-                    <p>Rs {(sumTotalPrices + shippingCost).toFixed(2)}</p>
+                    <p>Rs {(sumTotalPrices + shippingCost + sumTotalPrices/110).toFixed(2)}</p>
                 </div>
 
             </div>

@@ -6,7 +6,7 @@ import { MdOutlineClose } from "react-icons/md";
 import { deleteCartItem } from "@/services/productServices";
 import { jwtDecode } from "jwt-decode";
 const TABLE_HEAD = ["Item", "Price", "Qty", "Sub Total", ""];   
-export function CartTable({ cartItems,cartEmail}) {
+export function CartTable({ cartItems,cartEmail,setCartUpdate}) {
   const[cartItemss, setCartItems] = useState([]);
   console.log(cartEmail)
   const PopupHandler = (productId) => {
@@ -40,6 +40,7 @@ export function CartTable({ cartItems,cartEmail}) {
             console.log("Item deleted successfully", response);
   
             // Show success alert
+            setCartUpdate(prev => prev + 1);
             Swal.fire({
               title: "Removed!",
               text: "Your item has been removed.",

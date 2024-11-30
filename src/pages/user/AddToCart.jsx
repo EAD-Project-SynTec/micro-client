@@ -22,12 +22,17 @@ export default function AddToCart() {
     const [error, setError] = useState(null);
     const [cartData, setCartData] = useState([]);
     const [cartEmail, setCartEmail] = useState('');
+    const [cartUpdate, setCartUpdate] = useState(0);
+    const [cartTotal, setCartTotal] = useState(0);
   //retrieve cart items and buyer user id from the database
 
 
 
   useEffect(() => {
+
     const getCart = async () => {
+
+
       setLoading(true);
       try {
         const userId = "kwalskinick@gmail.com"; // Replace with dynamic email if needed
@@ -42,8 +47,9 @@ export default function AddToCart() {
           }
         ).then((response) => {
           // console.log(response.data.orderItems);
-          console.log(response.data.cartItems);
-          setCartEmail(userId);
+            console.log(response.data.cartItems.length);
+            setCartTotal(response.data.cartItems.length);
+            setCartEmail(userId);
           setCartData(response.data.cartItems); // Set the cart data if successful
           setSuccessOrder(true);
         });
@@ -56,7 +62,7 @@ export default function AddToCart() {
     };
 
     getCart();
-  }, []); 
+  }, [cartUpdate]); 
 
 
 
@@ -77,8 +83,8 @@ export default function AddToCart() {
     }
   return (
     <>
-    <MainNav />
-    <Alert
+    <MainNav/>
+    {/* <Alert
       icon={<Icon />}
       open={successOrder}
       onClose={()=>handleSuccessOrder(false)}
@@ -89,12 +95,12 @@ export default function AddToCart() {
       className="rounded-none border-l-4 border-[#ee7f25] bg-[#c9812e]/10 font-medium text-[#ee7f25] max-w-2xl mx-12"
     >
       Your orders have been successfully placed! <Link to="/buyers/my-orders" className="text-[#ff9f50] font-bold underline ml-2">View My Orders</Link>
-    </Alert>
+    </Alert> */}
     <CartOrderModal open={open} setOpen={modelOpenHandler} cartItems={cartItems} buyerID={buyerID} setSuccessOrder={handleSuccessOrder}  />
     <div className='px-8 bg-secondary'>
       <div className='md:grid grid-cols-3'>
         <div className='md:col-span-2 mx-8 mt-4'>
-          <CartTable cartItems={cartData} cartEmail={cartEmail} handleDeleteItem={handleDeleteItem} />
+          <CartTable cartItems={cartData} setCartUpdate={setCartUpdate} cartEmail={cartEmail} handleDeleteItem={handleDeleteItem} />
         </div>
         <div className='mx-3 mt-5'>
           <CheckoutCard cartData={cartData} openModel={modelOpenHandler} />

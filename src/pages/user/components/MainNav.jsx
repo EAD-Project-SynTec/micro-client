@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import MainNavSide from "./MainNavSide";
 import {  getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
-import { jwtDecode } from "jwt-decode";   //public\img\log_img.png
 import logoImg from "../../../../public/img/log_img.png";
 import { jwtDecode } from "jwt-decode";
 import  { useCart } from "../cartProvider";

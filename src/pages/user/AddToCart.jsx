@@ -50,17 +50,17 @@ export default function AddToCart() {
       }
     };
     getCart();
-  }, [cartUpdate]); 
+ 
 
-            // Retrieve and decode JWT token
-            const decodedToken = getDecodedToken();
-            if (decodedToken) {
-                const hasDefaultRole = hasRole(decodedToken, 'default-roles-ead-microservice-user');
-                console.log('Has default-roles-ead-microservice-user:', hasDefaultRole);
-            }else{
-              navigate('/login');
-            } 
-  }, []); 
+            // // Retrieve and decode JWT token
+            // const decodedToken = getDecodedToken();
+            // if (decodedToken) {
+            //     const hasDefaultRole = hasRole(decodedToken, 'default-roles-ead-microservice-user');
+            //     console.log('Has default-roles-ead-microservice-user:', hasDefaultRole);
+            // }else{
+            //   navigate('/login');
+            // } 
+  }, [cartUpdate]); 
 
 
 
@@ -105,5 +105,5 @@ export default function AddToCart() {
         </div>
       </div>
     </div>
-  </>  )
-}
+  </>  
+  )}

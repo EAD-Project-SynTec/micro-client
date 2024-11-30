@@ -40,14 +40,14 @@ function Login(){
             console.log(decodedData.resource_access.EADclient.roles[0])
             setIsLoading(false);
             console.log("Role: ", decodedData.resource_access.EADclient.roles[0]);
-            if(decodedData.resource_access.EADclient.roles[0]=="courier"){
-                navigate('/couriers/new-orders');
-            }
+            // if(decodedData.resource_access.EADclient.roles[0]=="courier"){
+            //     navigate('/couriers/new-orders');
+            // }
             if(decodedData.resource_access.EADclient.roles[0]=="seller"){
                 navigate('/dashboard/my-products');
             }
             if(decodedData.resource_access.EADclient.roles[0]=="buyer"){
-                navigate('/dashboard/buyer/orders');
+                navigate('/buyer/orders');
             }
         }
         catch (error){

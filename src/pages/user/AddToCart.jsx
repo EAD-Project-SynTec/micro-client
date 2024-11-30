@@ -12,6 +12,7 @@ import { Icon } from '@mui/material';
 import CheckoutCard from './components/CheckoutCard';
 
 
+
 export default function AddToCart() {
 
     const [cartItems, setCartItems] = useState([]);
@@ -22,6 +23,8 @@ export default function AddToCart() {
     const [error, setError] = useState(null);
     const [cartData, setCartData] = useState([]);
     const [cartEmail, setCartEmail] = useState('');
+
+    
   //retrieve cart items and buyer user id from the database
 
 
@@ -30,7 +33,11 @@ export default function AddToCart() {
     const getCart = async () => {
       setLoading(true);
       try {
-        const userId = "kwalskinick@gmail.com"; // Replace with dynamic email if needed
+
+        const token = sessionStorage.getItem('jwtToken');
+            const decodedData = jwtDecode(token);
+
+        const userId = decodedData.email; // Replace with dynamic email if needed
 
         // Sending a GET request to retrieve cart data
         const response = await axios.get(

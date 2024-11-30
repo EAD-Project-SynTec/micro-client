@@ -34,7 +34,7 @@ const SellerOrders = () => {
   }, []);
 
   const fetchAllOrders = () => {
-    fetch("http://localhost:8084/api/v1/order")
+    getAllOrders()
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => {

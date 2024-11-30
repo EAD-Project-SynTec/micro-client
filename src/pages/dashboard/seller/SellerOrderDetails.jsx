@@ -10,6 +10,7 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
+import { updateStatus } from "@/services/orderService";
 
 const SellerOrderDetails = () => {
   const { orderId } = useParams(); // Extract orderId from URL
@@ -27,10 +28,10 @@ const SellerOrderDetails = () => {
           `http://localhost:8084/api/v1/order/${orderId}`
         );
         setOrderDetails(response.data);
-        setUserId(response.data.userId); // Update userId after fetching order details
+        setUserId(response.data.userId); 
         console.log(response.data.userId);
 
-        // Now, fetch user details using the userId from the first API call
+        // Fetch user details using the userId from the first API call
         const fetchUserDetails = async () => {
           try {
             const userResponse = await axios.get(
@@ -53,23 +54,23 @@ const SellerOrderDetails = () => {
     };
 
     fetchOrderDetails();
-  }, [orderId]); // This will run when orderId changes
+  }, [orderId]); 
 
-  const updateOrderStatus = async () => {
-    try {
-      // Send the request with the order ID as part of the URL and the new status as a query parameter
-      await axios.patch(
-        `http://localhost:8084/api/v1/order/${orderDetails.id}/status?status=${newStatus}`
-      );
 
-      // Update the local state with the new status
-      setOrderDetails((prev) => ({ ...prev, status: newStatus }));
-      alert("Order status updated successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update order status.");
-    }
-  };
+const updateOrderStatus = async () => {
+  try {
+    // Use the updateStatus function from the service
+    await updateStatus(orderDetails.id, newStatus);
+
+    // Update the local state with the new status
+    setOrderDetails((prev) => ({ ...prev, status: newStatus }));
+    alert("Order status updated successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update order status.");
+  }
+};
+
 
   if (error) {
     return <Typography color="red">{error}</Typography>;

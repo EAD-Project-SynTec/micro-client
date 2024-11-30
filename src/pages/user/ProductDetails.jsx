@@ -270,10 +270,6 @@ const ProductDetails = () => {
                 {/* product name */}
                 <div>
                   <h1 className='text-2xl md:text-3xl font-semibold text-gray-800'>{product.name}</h1>
-                  <div className="mb-3 flex md:gap-5 gap-3 items-center md:justify-between">
-                    <Rating value={4} readonly />
-                    <p className=' text-sm text-gray-700'>Reviews (4)</p>
-                  </div>
                 </div>
                 <p className=' flex items-center gap-3 font-semibold text-gray-600 text-lg'><span><FaLocationDot /></span>{product.farmerAddL3}</p>
               </div>

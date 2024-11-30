@@ -1,4 +1,5 @@
 import React from 'react'
+
 import MyProductsTable from './MyProductsTable';
 export function MyProducts() {
   return (
@@ -9,6 +10,7 @@ export function MyProducts() {
      
     </>
   );
+
 }
 
 export default MyProducts;

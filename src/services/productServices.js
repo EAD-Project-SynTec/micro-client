@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8081',
@@ -50,6 +51,7 @@ export const addProduct = async (formData) => {
 export const getProductByID = async (id) => {
     try {
         const response = await axiosInstance.get(`/api/v1/product/${id}`);
+
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);
@@ -60,7 +62,9 @@ export const getProductByID = async (id) => {
 //function to update product details
 export const updateProduct = async (id, formData) => {
     try {
+
         const response = await axiosInstance.put(`/api/v1/product/${id}`, formData);
+
         return response.data;
     } catch (error) {
         console.error('Error updating product:', error);
@@ -183,6 +187,7 @@ export const getProductsBySellerID = async (id) => {
         throw error;
     }
 };
+
   //function to get product list by seller ID
   export const getProductsBySellerIDPage = async (id ,pageNumber,pageSize) => {
     try {
@@ -198,6 +203,7 @@ export const getProductsBySellerID = async (id) => {
     try {
         const response = await axiosInstance.delete(`/api/v1/product/${id}`);
         console.log(response);
+
         return response.data;
     } catch (error) {
         console.error('Error fetching product:', error);

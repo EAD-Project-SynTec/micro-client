@@ -1,4 +1,5 @@
 export  const productTypes = [
+
     { value: '', label: 'All' },
     { value: 'vegetable', label: 'Vegetable' },
     { value: 'fruit', label: 'Fruit' },
@@ -71,4 +72,6 @@ export  const productTypes = [
     ];
     
   
+
   
+

@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 const BASE_URL = 'http://localhost:8082';
+
 const api = axios.create({
   baseURL: BASE_URL,
 });
 
 api.interceptors.request.use(
+
     (config) => {
       const token = sessionStorage.getItem('jwtToken');
       if (token) {
@@ -41,6 +44,7 @@ const AuthService = {
       });
       return response.data;
     } catch (error) {
+
       if (error.response) {
         throw error.response.data;
       } else {
@@ -195,3 +199,4 @@ const AuthService = {
   
   export default AuthService;
   
+

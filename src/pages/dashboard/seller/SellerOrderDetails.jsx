@@ -93,46 +93,46 @@ const SellerOrderDetails = () => {
 
   return (
     <div>
-      <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg">
+      <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg" style={{ backgroundColor: '#f5f7fa' }}>
         <CardHeader
-          className="bg-blue-gray-50 p-4 text-center"
+          className="bg-green-500 p-4 text-center"
           floated={false}
           shadow={false}
         >
-          <Typography variant="h4" color="blue-gray">
+          <Typography variant="h4" color="white">
             Order Details
           </Typography>
         </CardHeader>
         <CardBody>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-6">
-            <Typography variant="h6" className="font-bold">
+            <Typography variant="h6" className="font-bold" color="blue-gray">
               Order Reference: {orderDetails.id}
             </Typography>
-            <Typography>
+            <Typography color="blue-gray">
             <strong>Date Created: </strong>{formatDate(orderDetails.dateCreated)}
             </Typography>
-            <Typography><strong>Status: </strong>{orderDetails.status}</Typography>
-            <Typography >
+            <Typography color="blue-gray"><strong>Status: </strong>{orderDetails.status}</Typography>
+            <Typography color="blue-gray">
             <strong>Total Price: </strong>${calculateTotalPrice(orderDetails.items)}
             </Typography>
           </div>
 
           {/* Display user details */}
           <div className="mb-6">
-            <Typography variant="h6" className="font-bold">
+            <Typography variant="h6" className="font-bold" color="blue-gray">
               Buyer Details:
             </Typography>
-            <Typography><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</Typography>
-                <Typography><strong>Email:</strong> {userDetails.email}</Typography>
-                <Typography><strong>Address:</strong> {userDetails.addressLine1}, {userDetails.addressLine2}, {userDetails.addressLine3}</Typography>
-                <Typography><strong>Phone Number:</strong> {userDetails.phoneNumber}</Typography>
+            <Typography color="blue-gray"><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</Typography>
+                <Typography color="blue-gray"><strong>Email:</strong> {userDetails.email}</Typography>
+                <Typography color="blue-gray"><strong>Address:</strong> {userDetails.addressLine1}, {userDetails.addressLine2}, {userDetails.addressLine3}</Typography>
+                <Typography color="blue-gray"><strong>Phone Number:</strong> {userDetails.phoneNumber}</Typography>
         
           </div>
           </div>
 
           <div className="mb-6">
-            <Typography variant="h6" >
+            <Typography variant="h6" color="blue-gray" >
               Change Status
             </Typography>
             <Select
@@ -147,7 +147,7 @@ const SellerOrderDetails = () => {
             <Button
               onClick={updateOrderStatus}
               className="mt-4"
-              color="blue"
+              color="green"
               disabled={!newStatus}
             >
               Update Status
@@ -155,14 +155,14 @@ const SellerOrderDetails = () => {
           </div>
 
           <div>
-            <Typography variant="h6" className="mb-4">
+            <Typography variant="h6" color="blue-gray" className="mb-4">
               Items
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {orderDetails.items.map((item, index) => (
                 <Card
                   key={index}
-                  className="border border-blue-gray-100 shadow-sm"
+                  className="shadow-lg"
                 >
                   <CardBody className="flex flex-col items-start gap-4">
                     <img
@@ -170,14 +170,14 @@ const SellerOrderDetails = () => {
                       alt={item.productName}
                       className="w-full h-32 object-cover rounded"
                     />
-                    <Typography variant="h6" color="blue-gray" className="text-center">
+                    <Typography variant="h5" color="blue-gray" className="text-center">
                       {item.productName}
                     </Typography>
-                    <Typography className="text-center">
+                    <Typography className="text-center" variant="h6">
                       Category: {item.category}
                     </Typography>
-                    <Typography>Quantity: {item.quantity}</Typography>
-                    <Typography>Price: ${item.price}</Typography>
+                    <Typography variant="h6">Quantity: {item.quantity}</Typography>
+                    <Typography variant="h6">Price: ${item.price}</Typography>
                   </CardBody>
                 </Card>
               ))}

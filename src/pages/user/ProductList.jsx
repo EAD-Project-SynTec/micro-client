@@ -88,6 +88,7 @@ const ProductList = () => {
                   minimumQuantity={5}
                   availableStock={10}
                   unitPrice={product.price}
+                  rating={product.rating}
                 />
               );
             }) :

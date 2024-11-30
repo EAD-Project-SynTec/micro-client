@@ -10,6 +10,7 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
+import { updateStatus } from "@/services/orderService";
 
 const SellerOrderDetails = () => {
   const { orderId } = useParams(); // Extract orderId from URL
@@ -24,13 +25,13 @@ const SellerOrderDetails = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8084/api/v1/order/getOrderDetails/${orderId}`
+          `http://localhost:8084/api/v1/order/${orderId}`
         );
         setOrderDetails(response.data);
-        setUserId(response.data.userId); // Update userId after fetching order details
+        setUserId(response.data.userId); 
         console.log(response.data.userId);
 
-        // Now, fetch user details using the userId from the first API call
+        // Fetch user details using the userId from the first API call
         const fetchUserDetails = async () => {
           try {
             const userResponse = await axios.get(
@@ -53,23 +54,23 @@ const SellerOrderDetails = () => {
     };
 
     fetchOrderDetails();
-  }, [orderId]); // This will run when orderId changes
+  }, [orderId]); 
 
-  const updateOrderStatus = async () => {
-    try {
-      // Send the request with the order ID as part of the URL and the new status as a query parameter
-      await axios.patch(
-        `http://localhost:8084/api/v1/order/${orderDetails.id}/status?status=${newStatus}`
-      );
 
-      // Update the local state with the new status
-      setOrderDetails((prev) => ({ ...prev, status: newStatus }));
-      alert("Order status updated successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update order status.");
-    }
-  };
+const updateOrderStatus = async () => {
+  try {
+    // Use the updateStatus function from the service
+    await updateStatus(orderDetails.id, newStatus);
+
+    // Update the local state with the new status
+    setOrderDetails((prev) => ({ ...prev, status: newStatus }));
+    alert("Order status updated successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update order status.");
+  }
+};
+
 
   if (error) {
     return <Typography color="red">{error}</Typography>;
@@ -91,48 +92,109 @@ const SellerOrderDetails = () => {
     ).toFixed(2);
   };
 
+  const renderStatusTracker = (status) => {
+    const steps = ["Pending", "Processing", "Delivered"];
+    const currentStep = steps.findIndex(
+      (step) => step.toLowerCase() === status.toLowerCase()
+    );
+
+    return (
+      <div className="mb-6">
+        {/* Status Labels */}
+        <div className="flex justify-start mb-2">
+          {steps.map((step, index) => (
+            <div
+              key={step}
+              className="text-left flex-1"
+              style={{ minWidth: "100px" }}
+            >
+              <Typography
+                variant="small"
+                className={`font-bold ${
+                  index <= currentStep ? "text-green-500" : "text-gray-500"
+                }`}
+              >
+                {step}
+              </Typography>
+            </div>
+          ))}
+        </div>
+
+        {/* Progress Tracker */}
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={step} className="flex items-center w-full">
+              {/* Step Circle */}
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
+                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                {index + 1}
+              </div>
+
+              {/* Connector */}
+              {index < steps.length - 1 && (
+                <div
+                  className={`flex-1 h-1 ${
+                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                ></div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
-      <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg">
+      <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg" style={{ backgroundColor: '#f5f7fa' }}>
         <CardHeader
-          className="bg-blue-gray-50 p-4 text-center"
+          className="bg-green-500 p-4 text-center"
           floated={false}
           shadow={false}
         >
-          <Typography variant="h4" color="blue-gray">
+          <Typography variant="h4" color="white">
             Order Details
           </Typography>
         </CardHeader>
         <CardBody>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-6">
-            <Typography variant="h6" className="font-bold">
+            <Typography variant="h6" className="font-bold" color="blue-gray">
               Order Reference: {orderDetails.id}
             </Typography>
-            <Typography>
+            <Typography color="blue-gray">
             <strong>Date Created: </strong>{formatDate(orderDetails.dateCreated)}
             </Typography>
-            <Typography><strong>Status: </strong>{orderDetails.status}</Typography>
-            <Typography >
-            <strong>Total Price: </strong>${calculateTotalPrice(orderDetails.items)}
+            <Typography color="blue-gray">
+            <strong>Total Price: </strong>Rs.{calculateTotalPrice(orderDetails.items)}
             </Typography>
+            
           </div>
 
           {/* Display user details */}
           <div className="mb-6">
-            <Typography variant="h6" className="font-bold">
+            <Typography variant="h6" className="font-bold" color="blue-gray">
               Buyer Details:
             </Typography>
-            <Typography><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</Typography>
-                <Typography><strong>Email:</strong> {userDetails.email}</Typography>
-                <Typography><strong>Address:</strong> {userDetails.addressLine1}, {userDetails.addressLine2}, {userDetails.addressLine3}</Typography>
-                <Typography><strong>Phone Number:</strong> {userDetails.phoneNumber}</Typography>
+            <Typography color="blue-gray"><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</Typography>
+                <Typography color="blue-gray"><strong>Email:</strong> {userDetails.email}</Typography>
+                <Typography color="blue-gray"><strong>Address:</strong> {userDetails.addressLine1}, {userDetails.addressLine2}, {userDetails.addressLine3}</Typography>
+                <Typography color="blue-gray"><strong>Phone Number:</strong> {userDetails.phoneNumber}</Typography>
         
           </div>
           </div>
 
+          <Typography variant="h6" color="blue-gray"><strong>Status </strong></Typography>
+          {/* Updated Status Tracker */}
+          {renderStatusTracker(orderDetails.status)}
+
           <div className="mb-6">
-            <Typography variant="h6" >
+            
+            <Typography variant="h6" color="blue-gray" >
               Change Status
             </Typography>
             <Select
@@ -147,7 +209,7 @@ const SellerOrderDetails = () => {
             <Button
               onClick={updateOrderStatus}
               className="mt-4"
-              color="blue"
+              color="green"
               disabled={!newStatus}
             >
               Update Status
@@ -155,14 +217,14 @@ const SellerOrderDetails = () => {
           </div>
 
           <div>
-            <Typography variant="h6" className="mb-4">
+            <Typography variant="h6" color="blue-gray" className="mb-4">
               Items
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {orderDetails.items.map((item, index) => (
                 <Card
                   key={index}
-                  className="border border-blue-gray-100 shadow-sm"
+                  className="shadow-lg"
                 >
                   <CardBody className="flex flex-col items-start gap-4">
                     <img
@@ -170,14 +232,14 @@ const SellerOrderDetails = () => {
                       alt={item.productName}
                       className="w-full h-32 object-cover rounded"
                     />
-                    <Typography variant="h6" color="blue-gray" className="text-center">
+                    <Typography variant="h5" color="blue-gray" className="text-center">
                       {item.productName}
                     </Typography>
-                    <Typography className="text-center">
+                    <Typography className="text-center" variant="h6">
                       Category: {item.category}
                     </Typography>
-                    <Typography>Quantity: {item.quantity}</Typography>
-                    <Typography>Price: ${item.price}</Typography>
+                    <Typography variant="h6">Quantity: {item.quantity}</Typography>
+                    <Typography variant="h6">Price: Rs.{item.price}</Typography>
                   </CardBody>
                 </Card>
               ))}

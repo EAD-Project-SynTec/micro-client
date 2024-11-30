@@ -20,7 +20,7 @@ const BuyerOrders = () => {
     "Order Reference",
     "Date Created",
     "Status",
-    "Product ID",
+    "Product",
     "Quantity",
     "Unit Price",
     "Total Price",
@@ -32,7 +32,6 @@ const BuyerOrders = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const location = useLocation();
-  const [selectedRow, setSelectedRow] = useState(null);
   const navigate = useNavigate();
   const userId = "kavin@gmail.com"; // Assume this is the user ID
 
@@ -53,12 +52,7 @@ const BuyerOrders = () => {
       });
   };
 
-  useEffect(() => {
-    if (location.pathname === "/my-orders") {
-      setTab(tab);
-    }
-  }, [location.pathname, tab]);
-
+  
   // Filter data based on tab selection
   useEffect(() => {
     const filterResult = (statusItem) => {
@@ -89,7 +83,7 @@ const BuyerOrders = () => {
   }, [data, tab, searchQuery]);
 
   const handleRowClick = (id) => {
-    navigate(`/dashboard/buyerOrders/${id}`);
+    navigate(`/buyer/orders/${id}`);
   };
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -110,15 +104,14 @@ const BuyerOrders = () => {
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
             <div>
-              <Typography variant="h3" color="custom-gray">
+              <Typography variant="h3" color="blue-gray">
                 Orders Overview
               </Typography>
             </div>
             {/* <div className="flex w-full shrink-0 gap-2 md:w-max">
               <Button onClick={() => {}}>Add Order</Button>
             </div> */}
-          </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end m-5">
             <div className="w-full md:w-72">
               <Input
                 label="Search by Order Reference"
@@ -127,6 +120,7 @@ const BuyerOrders = () => {
                 onChange={(e) => setSearchQuery(e.target.value)} // Update search query
               />
             </div>
+          </div>
           </div>
         </CardHeader>
         <CardBody className="overflow-scroll px-0">
@@ -142,8 +136,8 @@ const BuyerOrders = () => {
                     onClick={() => setTab("All")}
                     className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
                       tab === "All"
-                        ? "text-blue-500 font-bold border-b-2 border-blue-500"
-                        : "text-gray-500"
+                        ? "text-green-500 font-bold border-b-2 border-green-500"
+                        : "text-blue-gray"
                     }`}
                   >
                     All
@@ -152,9 +146,9 @@ const BuyerOrders = () => {
                   <button
                     onClick={() => setTab("Pending")}
                     className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
-                      tab === "Ready to pickup"
-                        ? "text-blue-500 font-bold border-b-2 border-blue-500"
-                        : "text-gray-500"
+                      tab === "Pending"
+                        ? "text-green-500 font-bold border-b-2 border-green-500"
+                        : "text-blue-gray"
                     }`}
                   >
                     Pending
@@ -163,9 +157,9 @@ const BuyerOrders = () => {
                   <button
                     onClick={() => setTab("Processing")}
                     className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
-                      tab === "Picked up"
-                        ? "text-blue-500 font-bold border-b-2 border-blue-500"
-                        : "text-gray-500"
+                      tab === "Processing"
+                        ? "text-green-500 font-bold border-b-2 border-green-500"
+                        : "text-blue-gray"
                     }`}
                   >
                     Processing
@@ -175,110 +169,113 @@ const BuyerOrders = () => {
                     onClick={() => setTab("Delivered")}
                     className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
                       tab === "Delivered"
-                        ? "text-blue-500 font-bold border-b-2 border-blue-500"
-                        : "text-gray-500"
+                        ? "text-green-500 font-extrabold border-b-2 border-green-500"
+                        : "text-blue-gray"
                     }`}
                   >
                     Delivered
                   </button>
                 </div>
               </div>
-
-              <table className="w-full min-w-max table-auto text-left">
-                <thead>
-                  <tr>
-                    {TABLE_HEAD.map((head) => (
-                      <th
-                        key={head}
-                        scope="col"
-                        className="border border-blue-gray-100 bg-blue-gray-50 p-4"
-                      >
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
+              <div className=" flex-col justify-center text-custom_gray bg-white shadow-md overflow-auto rounded-xl bg-clip-border mt-8 ml-5 mr-5">
+                <table className="w-full min-w-max table-auto text-left">
+                  <thead>
+                    <tr>
+                      {TABLE_HEAD.map((head) => (
+                        <th
+                          key={head}
+                          scope="col"
+                          className="p-5 font-bold w-24 text-left align-middle bg-green-500"
                         >
-                          {head}
-                        </Typography>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredData.map((order) =>
-                    order.items?.map((item, index) => {
-                      const isLast = index === order.items.length - 1;
-                      const classes = isLast
-                        ? "p-4"
-                        : "p-4 border-b border-blue-gray-50";
+                          <Typography
+                            variant="small"
+                            color="white"
+                            className="font-normal leading-none opacity-100"
+                          >
+                            {head}
+                          </Typography>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredData.map((order) =>
+                      order.items?.map((item, index) => {
+                        const isLast = index === order.items.length - 1;
+                        const classes = isLast
+                          ? "p-4"
+                          : "p-4 border-b border-blue-gray-50";
 
-                      return (
-                        <tr
-                          key={`${order.id}-${item.productID}-${index}`}
-                          onClick={() => handleRowClick(order.id)}
-                          className="cursor-pointer hover:bg-gray-100" // Hover effect
-                        >
-                          {index === 0 && (
-                            <>
+                        return (
+                          <tr
+                            key={`${order.id}-${item.productID}-${index}`}
+                            onClick={() => handleRowClick(order.orderId)}
+                            className="cursor-pointer hover:bg-gray-200" // Hover effect
+                          >
+                            {index === 0 && (
+                              <>
+                                <td
+                                  className="p-4 border-b border-blue-gray-200"
+                                  rowSpan={order.items.length}
+                                >
+                                  <Typography variant="small" color="blue-gray">
+                                    {order.orderId}
+                                  </Typography>
+                                </td>
+                                <td
+                                  className="p-4 border-b border-blue-gray-200"
+                                  rowSpan={order.items.length}
+                                >
+                                  <Typography variant="small" color="blue-gray">
+                                    {formatDate(order.dateCreated)}
+                                  </Typography>
+                                </td>
+                                <td
+                                  className="p-4 border-b border-blue-gray-200"
+                                  rowSpan={order.items.length}
+                                >
+                                  <Typography variant="small" color="blue-gray">
+                                    {order.status}
+                                  </Typography>
+                                </td>
+                              </>
+                            )}
+
+                            <td className="p-4 border-b border-blue-gray-200">
+                              <Typography variant="small" color="blue-gray">
+                                {item.productName}
+                              </Typography>
+                            </td>
+                            <td className="p-4 border-b border-blue-gray-200">
+                              <Typography variant="small" color="blue-gray">
+                                {item.quantity}
+                              </Typography>
+                            </td>
+                            <td className="p-4 border-b border-blue-gray-200">
+                              <Typography variant="small" color="blue-gray">
+                                Rs.{item.price}
+                              </Typography>
+                            </td>
+
+                            {index === 0 && (
+                              <>
                               <td
-                                className="p-4 border border-blue-gray-50"
+                                className="p-4 border-b border-blue-gray-200"
                                 rowSpan={order.items.length}
                               >
                                 <Typography variant="small" color="blue-gray">
-                                  {order.id}
-                                </Typography>
-                              </td>
-                              <td
-                                className="p-4 border border-blue-gray-50"
-                                rowSpan={order.items.length}
-                              >
-                                <Typography variant="small" color="blue-gray">
-                                  {formatDate(order.dateCreated)}
-                                </Typography>
-                              </td>
-                              <td
-                                className="p-4 border border-blue-gray-50"
-                                rowSpan={order.items.length}
-                              >
-                                <Typography variant="small" color="blue-gray">
-                                  {order.status}
+                                  Rs.{calculateTotalPrice(order.items)}
                                 </Typography>
                               </td>
                             </>
-                          )}
-
-                          <td className="p-4 border border-blue-gray-50">
-                            <Typography variant="small" color="blue-gray">
-                              {item.productID}
-                            </Typography>
-                          </td>
-                          <td className="p-4 border border-blue-gray-50">
-                            <Typography variant="small" color="blue-gray">
-                              {item.quantity}
-                            </Typography>
-                          </td>
-                          <td className="p-4 border border-blue-gray-50">
-                            <Typography variant="small" color="blue-gray">
-                              ${item.price}
-                            </Typography>
-                          </td>
-
-                          {index === 0 && (
-                            <td
-                              className="p-4 border border-blue-gray-50"
-                              rowSpan={order.items.length}
-                            >
-                              <Typography variant="small" color="blue-gray">
-                                ${calculateTotalPrice(order.items)}
-                              </Typography>
-                            </td>
-                          )}
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+                            )}
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+                </div>  
             </div>
           )}
         </CardBody>

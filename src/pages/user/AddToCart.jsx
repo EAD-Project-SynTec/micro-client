@@ -10,6 +10,8 @@ import {Alert} from "@material-tailwind/react";
 import { Link } from 'react-router-dom';
 import { Icon } from '@mui/material';
 import CheckoutCard from './components/CheckoutCard';
+import {getDecodedToken,hasRole} from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function AddToCart() {
@@ -23,6 +25,7 @@ export default function AddToCart() {
     const [cartData, setCartData] = useState([]);
     const [cartEmail, setCartEmail] = useState('');
   //retrieve cart items and buyer user id from the database
+  const navigate = useNavigate();
 
 
 
@@ -56,6 +59,15 @@ export default function AddToCart() {
     };
 
     getCart();
+
+            // Retrieve and decode JWT token
+            const decodedToken = getDecodedToken();
+            if (decodedToken) {
+                const hasDefaultRole = hasRole(decodedToken, 'default-roles-ead-microservice-user');
+                console.log('Has default-roles-ead-microservice-user:', hasDefaultRole);
+            }else{
+              navigate('/login');
+            } 
   }, []); 
 
 

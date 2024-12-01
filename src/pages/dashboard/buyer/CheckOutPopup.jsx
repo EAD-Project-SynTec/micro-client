@@ -37,6 +37,7 @@ const CheckOutPopup = ({ onClose, userId, orderTotal }) => {
         productID: item.productID,
         quantity: item.quantity,
         price: item.price,
+        productName: item.name
       })),
     };
 
@@ -46,7 +47,15 @@ const CheckOutPopup = ({ onClose, userId, orderTotal }) => {
       await axios.post("http://localhost:8084/api/v1/order", orderData, {
         headers: { "Content-Type": "application/json" },
       });
-      Swal.fire("Success", "Order placed successfully!", "success").then(() => onClose());
+
+    // Clear the cart after placing the order
+    await axios.delete(`http://localhost:8084/api/v1/cart/all?email=${userId}`);
+
+
+    Swal.fire("Success", "Order placed successfully!", "success").then(() => {
+      // Refresh the page after the order is placed successfully
+      window.location.reload();
+    });
     } catch (err) {
       setError("Failed to place the order.");
       Swal.fire("Error", "Failed to place the order. Please try again.", "error");

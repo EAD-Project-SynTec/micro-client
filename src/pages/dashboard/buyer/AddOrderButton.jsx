@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AddOrderPopup from "./AddOrderPopup";
 import Button from '@mui/material/Button';
 
-const AddOrderButton = ({productId}) => {
+const AddOrderButton = ({productId, quantity}) => {
   const [showPopup, setShowPopup] = useState(false);
   
   return (
@@ -18,8 +18,10 @@ const AddOrderButton = ({productId}) => {
 </button>
       {showPopup && (
         <AddOrderPopup
-          productId={productId} // Pass the product ID here
-          onClose={() => setShowPopup(false)}
+        onClose={() => setShowPopup(false)}  // Corrected: passing onClose as a function
+        productId={productId}                // Corrected: passing productId prop
+        selectedQuantity={quantity}                  // Corrected: passing quantity prop
+          
         />
       )}
     </>

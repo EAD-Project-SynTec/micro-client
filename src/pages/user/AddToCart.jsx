@@ -47,7 +47,7 @@ export default function AddToCart() {
         const token = sessionStorage.getItem('jwtToken');
             const decodedData = jwtDecode(token);
 
-        const userId = decodedData.email; // Replace with dynamic email if needed
+        // const userId = decodedData.email; // Replace with dynamic email if needed
 
         // Sending a GET request to retrieve cart data
         const response = await axios.get(

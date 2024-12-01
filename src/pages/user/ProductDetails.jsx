@@ -19,6 +19,7 @@ import Review from './components/Review';
 import { useCart } from './cartProvider';
 import CartServices from '@/services/cartServices';
 import AddOrderButton from '../dashboard/buyer/AddOrderButton';
+import { getUsername } from '@/services/authService';
 
 function Icon() {
   return (
@@ -118,7 +119,7 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     console.log(product)
     const data = {
-      customerEmail: 'kwalskinick@gmail.com',
+      customerEmail: getUsername(),//'kwalskinick@gmail.com',
       price: product.price,
       productID: product.id,
       quantity: selectedQuantity,

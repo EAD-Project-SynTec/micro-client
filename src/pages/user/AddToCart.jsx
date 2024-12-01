@@ -14,11 +14,13 @@ import CheckoutCard from './components/CheckoutCard';
 import CartServices from '@/services/cartServices';
 import {getDecodedToken,hasRole} from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
+import {getUsername} from "../../services/authService"
+
 
 export default function AddToCart() {
 
     const [cartItems, setCartItems] = useState([]);
-    const [buyerID, setBuyerID] = useState('kwalskinick@gmail.com');
+    //const [buyerID, setBuyerID] = useState('kwalskinick@gmail.com');
     const [open, setOpen] = useState(false);
     const [successOrder, setSuccessOrder] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -32,12 +34,15 @@ export default function AddToCart() {
   //retrieve cart items and buyer user id from the database
   const navigate = useNavigate();
 
+  //setBuyerID(getUsername());
 
-
+  const buyerID = getUsername();
+  
   useEffect(() => {
     const getCart = async () => {
       setLoading(true);
       try {
+
 
         const token = sessionStorage.getItem('jwtToken');
             const decodedData = jwtDecode(token);
@@ -61,6 +66,9 @@ export default function AddToCart() {
         });
 
         // Replace with dynamic email if needed
+
+        const userId = getUsername(); // Replace with dynamic email if needed
+
         const data = await CartServices.getCart(userId);
         
         console.log(data.cartItems.length);
@@ -76,15 +84,17 @@ export default function AddToCart() {
     };
     getCart();
  
-
             // // Retrieve and decode JWT token
-            // const decodedToken = getDecodedToken();
-            // if (decodedToken) {
-            //     const hasDefaultRole = hasRole(decodedToken, 'default-roles-ead-microservice-user');
-            //     console.log('Has default-roles-ead-microservice-user:', hasDefaultRole);
-            // }else{
-            //   navigate('/login');
-            // } 
+            const decodedToken = getDecodedToken();
+            if (decodedToken) {
+                const hasDefaultRole = hasRole(decodedToken, 'buyer');
+                console.log('user is :', hasDefaultRole);
+                if(!hasDefaultRole){
+                  navigate('/login');
+                }
+            }else{
+              navigate('/login');
+            } 
   }, [cartUpdate]); 
 
 

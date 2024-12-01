@@ -1,4 +1,5 @@
 import React from 'react'
+import CheckoutButton from './../../dashboard/buyer/CheckoutButton'
 
 const CheckoutCard = ({ cartData }) => {
     console.log(cartData)
@@ -43,6 +44,10 @@ const CheckoutCard = ({ cartData }) => {
                 </div>
 
             </div>
+
+
+            <><CheckoutButton orderTotal={(sumTotalPrices + shippingCost + sumTotalPrices/110)}/> 
+            </>
         </div>
     )
 }

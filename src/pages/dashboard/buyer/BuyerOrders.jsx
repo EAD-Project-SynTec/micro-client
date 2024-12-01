@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { getOrdersByUserId } from "@/services/orderService";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MainNav from "@/pages/user/components/MainNav";
+import {getDecodedToken,hasRole,getUsername} from "../../../services/authService"
 
 const BuyerOrders = () => {
   const TABLE_HEAD = [
@@ -30,10 +31,12 @@ const BuyerOrders = () => {
   const [searchQuery, setSearchQuery] = useState(""); 
   const location = useLocation();
   const navigate = useNavigate();
-  const userId = "kavin@gmail.com"; 
+  const userId = getUsername(); 
 
   // Fetch all orders on component mount
   useEffect(() => {
+    getUsername()
+    console.log("user id is---------- " ,userId )
     fetchAllOrders();
   }, []);
 

@@ -9,6 +9,7 @@ import UserDropdown from "./UserDropdown";
 import logoImg from "../../../../public/img/log_img.png";
 import { jwtDecode } from "jwt-decode";
 import  { useCart } from "../cartProvider";
+import { getUsername } from "@/services/authService";
 
 const MainNav = ({ getSearchResults,cartTotal }) => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
   const [userName, setUserName] = useState('');
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
-  const email = "kwalskinick@gmail.com"; 
+  const email = getUsername(); 
   const { cartCount } = useCart();
   // const getCartTotal = () => {
   //   return localStorage.getItem('cartTotal') || 0;

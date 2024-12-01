@@ -46,28 +46,20 @@ export default function AddToCart() {
 
         const token = sessionStorage.getItem('jwtToken');
             const decodedData = jwtDecode(token);
+            console.log(decodedData.email);
+            const userId = decodedData.email;
 
-        // const userId = decodedData.email; // Replace with dynamic email if needed
-
-        // Sending a GET request to retrieve cart data
-        const response = await axios.get(
-          `http://localhost:8084/api/v1/cart?email=${userId}`, // Updated API endpoint with query parameter
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        ).then((response) => {
-          // console.log(response.data.orderItems);
-          console.log(response.data.cartItems);
-          setCartEmail(userId);
-          setCartData(response.data.cartItems); // Set the cart data if successful
-          setSuccessOrder(true);
-        });
+        //     const response = await CartServices.getCart(decodedData.email).then((response) => {
+        //   // console.log(response.data.orderItems);
+        //     console.log(response);
+        //   setCartEmail(userId);
+        //   setCartData(response.data.cartItems); // Set the cart data if successful
+        //   setSuccessOrder(true);
+        // });
 
         // Replace with dynamic email if needed
 
-        const userId = getUsername(); // Replace with dynamic email if needed
+        // const userId = getUsername(); // Replace with dynamic email if needed
 
         const data = await CartServices.getCart(userId);
         

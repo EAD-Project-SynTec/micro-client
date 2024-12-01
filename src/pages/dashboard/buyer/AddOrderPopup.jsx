@@ -10,13 +10,13 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import {getUsername} from "../../../services/authService"
 
-const AddOrderPopup = ({ onClose, productId }) => {
+const AddOrderPopup = ({ onClose, productId, selectedQuantity}) => {
   const [productDetails, setProductDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [address, setAddress] = useState("");
-  const [quantity, setQuantity] = useState();
+  const [quantity, setQuantity] = useState(selectedQuantity || 1);
   const [orderDate, setOrderDate] = useState("");
 
   useEffect(() => {

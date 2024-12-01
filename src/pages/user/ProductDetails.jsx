@@ -298,7 +298,7 @@ const ProductDetails = () => {
         onClick={handleModalOPen}
 > 
   Buy Now
-</button>*/}<AddOrderButton productId={id} />
+</button>*/}<AddOrderButton productId={id} quantity={selectedQuantity}/>
 
 
 <button className='border-green-500 border rounded-full inline-flex items-center 

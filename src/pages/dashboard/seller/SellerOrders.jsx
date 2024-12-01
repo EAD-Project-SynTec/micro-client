@@ -255,7 +255,7 @@ const SellerOrders = () => {
                                 rowSpan={order.items.length}
                               >
                                 <Typography variant="small" color="blue-gray">
-                                  ${calculateTotalPrice(order.items)}
+                                  Rs.{calculateTotalPrice(order.items)}
                                 </Typography>
                               </td>
                             )}

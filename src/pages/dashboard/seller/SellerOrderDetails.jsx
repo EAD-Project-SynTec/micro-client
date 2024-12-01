@@ -110,9 +110,15 @@ const SellerOrderDetails = () => {
 
   const renderStatusTracker = (status) => {
     const steps = ["Pending", "Processing", "Delivered"];
-    const currentStep = steps.findIndex(
-      (step) => step.toLowerCase() === status.toLowerCase()
-    );
+    
+    // Normalize the status, default to empty string if null or undefined
+    const normalizedStatus = status && typeof status === "string" ? status.toLowerCase() : "";
+    
+    
+    // Determine the current step index or set it to -1 if status is null/empty
+    const currentStep = normalizedStatus
+      ? steps.findIndex((step) => step.toLowerCase() === normalizedStatus)
+      : -1; // For null/empty status, set currentStep to -1
 
     return (
       <div className="mb-6">
@@ -143,7 +149,7 @@ const SellerOrderDetails = () => {
               {/* Step Circle */}
               <div
                 className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
-                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                  index <= currentStep || normalizedStatus === "" ? "bg-green-500" : "bg-gray-300"
                 }`}
               >
                 {index + 1}
@@ -153,7 +159,7 @@ const SellerOrderDetails = () => {
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 ${
-                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                    index < currentStep || normalizedStatus === "" ? "bg-green-500" : "bg-gray-300"
                   }`}
                 ></div>
               )}
@@ -162,7 +168,7 @@ const SellerOrderDetails = () => {
         </div>
       </div>
     );
-  };
+};
 
   return (
     <div>
@@ -207,6 +213,7 @@ const SellerOrderDetails = () => {
           <Typography variant="h6" color="blue-gray"><strong>Status </strong></Typography>
           {/* Updated Status Tracker */}
           {renderStatusTracker(orderDetails.status)}
+
 
           <div className="mb-6">
             

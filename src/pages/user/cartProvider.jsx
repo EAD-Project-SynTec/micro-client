@@ -4,14 +4,21 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(() => {
-    const savedCount = localStorage.getItem('cartCount');
-    return savedCount ? parseInt(savedCount) : 0;
+    const savedCount = sessionStorage.getItem('cartCount');
+    return savedCount ? Math.max(0, parseInt(savedCount)) : 0;
   });
 
-  // Update localStorage when cartCount changes
+  // Update sessionStorage when cartCount changes
   useEffect(() => {
-    localStorage.setItem('cartCount', cartCount.toString());
+    sessionStorage.setItem('cartCount', cartCount.toString());
   }, [cartCount]);
+
+  // Clear data when component unmounts
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem('cartCount');
+    };
+  }, []);
 
   return (
     <CartContext.Provider value={{ cartCount, setCartCount }}>

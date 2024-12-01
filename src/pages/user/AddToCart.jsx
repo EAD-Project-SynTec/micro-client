@@ -10,6 +10,7 @@ import {Alert} from "@material-tailwind/react";
 import { Link } from 'react-router-dom';
 import { Icon } from '@mui/material';
 import CheckoutCard from './components/CheckoutCard';
+
 import CartServices from '@/services/cartServices';
 import {getDecodedToken,hasRole} from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +27,8 @@ export default function AddToCart() {
     const [error, setError] = useState(null);
     const [cartData, setCartData] = useState([]);
     const [cartEmail, setCartEmail] = useState('');
+
+    
     const [cartUpdate, setCartUpdate] = useState(0);
     const [cartTotal, setCartTotal] = useState(0);
   //retrieve cart items and buyer user id from the database
@@ -39,7 +42,25 @@ export default function AddToCart() {
     const getCart = async () => {
       setLoading(true);
       try {
-        const userId = getUsername(); // Replace with dynamic email if needed
+
+
+        const token = sessionStorage.getItem('jwtToken');
+            const decodedData = jwtDecode(token);
+            console.log(decodedData.email);
+            const userId = decodedData.email;
+
+        //     const response = await CartServices.getCart(decodedData.email).then((response) => {
+        //   // console.log(response.data.orderItems);
+        //     console.log(response);
+        //   setCartEmail(userId);
+        //   setCartData(response.data.cartItems); // Set the cart data if successful
+        //   setSuccessOrder(true);
+        // });
+
+        // Replace with dynamic email if needed
+
+        // const userId = getUsername(); // Replace with dynamic email if needed
+
         const data = await CartServices.getCart(userId);
         
         console.log(data.cartItems.length);

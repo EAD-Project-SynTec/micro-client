@@ -9,7 +9,7 @@ import BuyerOrders from "./pages/dashboard/buyer/BuyerOrders";
 import SellerOrders from "./pages/dashboard/seller/SellerOrders";
 import BuyerOrderDetails from "./pages/dashboard/buyer/BuyerOrderDetails";
 import SellerOrderDetails from "./pages/dashboard/seller/SellerOrderDetails";
-
+import ForgotPassword from "../src/pages/user/auth/ForgotPassword";
 import ProductList from "./pages/user/ProductList";
 import ProductDetails from "./pages/user/ProductDetails";
 import AddToCart from "./pages/user/AddToCart";
@@ -20,6 +20,7 @@ function App() {
     <Routes>
     <Route path="/login" element={<Login/>}></Route>
     <Route path="/signup" element={<Signup/>}/>
+    <Route path="/forgotpassword" element={<ForgotPassword/>}/>
       <Route path="/dashboard/*" element={<Dashboard />} />
       {/* <Route path="/dashboard/add-products" element={<AddProducts />} /> */}
       <Route path="/auth/*" element={<Auth />} />
@@ -34,6 +35,7 @@ function App() {
       <Route path="/products" element={<ProductList/>}/>
       <Route path='/product-details/:id' element={<ProductDetails/>}></Route>
       <Route path="/cart" element={<AddToCart/>}/>
+
     </Routes>
   );
 }

@@ -36,7 +36,7 @@ const SellerOrderDetails = () => {
         const fetchUserDetails = async () => {
           try {
             const userResponse = await axios.get(
-              `http://localhost:8082/api/user/${response.data.userId}` // Use the userId from the order details
+              `http://localhost:8082/api/user/${response.data.userId}` 
             );
             setUserDetails(userResponse.data);
             console.log(userResponse.data);
@@ -46,7 +46,6 @@ const SellerOrderDetails = () => {
           }
         };
 
-        // Call fetchUserDetails after order details are successfully fetched
         fetchUserDetails();
       } catch (err) {
         console.error(err);
@@ -60,13 +59,10 @@ const SellerOrderDetails = () => {
 
   const updateOrderStatus = async () => {
     try {
-      // Use the updateStatus function from the service
       await updateStatus(orderDetails.id, newStatus);
-  
-      // Update the local state with the new status
+
       setOrderDetails((prev) => ({ ...prev, status: newStatus }));
-  
-      // Show success alert using SweetAlert
+
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -110,24 +106,26 @@ const SellerOrderDetails = () => {
 
   const renderStatusTracker = (status) => {
     const steps = ["Pending", "Processing", "Delivered"];
+  
+    // Normalize the status, treat null or undefined as "Pending"
+    const normalizedStatus =
+      typeof status === "string" && status.trim() !== "" ? status.toLowerCase() : "pending";
+  
+    // Determine the current step index; default to -1 if status is invalid
     const currentStep = steps.findIndex(
-      (step) => step.toLowerCase() === status.toLowerCase()
+      (step) => step.toLowerCase() === normalizedStatus
     );
-
+  
     return (
       <div className="mb-6">
         {/* Status Labels */}
         <div className="flex justify-start mb-2">
           {steps.map((step, index) => (
-            <div
-              key={step}
-              className="text-left flex-1"
-              style={{ minWidth: "100px" }}
-            >
+            <div key={step} className="text-left flex-1" style={{ minWidth: "100px" }}>
               <Typography
                 variant="small"
                 className={`font-bold ${
-                  index <= currentStep ? "text-green-500" : "text-gray-500"
+                  index <= currentStep && currentStep >= 0 ? "text-green-500" : "text-gray-500"
                 }`}
               >
                 {step}
@@ -135,7 +133,7 @@ const SellerOrderDetails = () => {
             </div>
           ))}
         </div>
-
+  
         {/* Progress Tracker */}
         <div className="flex items-center justify-between">
           {steps.map((step, index) => (
@@ -143,17 +141,17 @@ const SellerOrderDetails = () => {
               {/* Step Circle */}
               <div
                 className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
-                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                  index <= currentStep && currentStep >= 0 ? "bg-green-500" : "bg-gray-300"
                 }`}
               >
                 {index + 1}
               </div>
-
+  
               {/* Connector */}
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 ${
-                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                    index < currentStep && currentStep >= 0 ? "bg-green-500" : "bg-gray-300"
                   }`}
                 ></div>
               )}
@@ -163,6 +161,8 @@ const SellerOrderDetails = () => {
       </div>
     );
   };
+  
+
 
   return (
     <div>

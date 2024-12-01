@@ -17,7 +17,6 @@ const BuyerOrders = () => {
   const TABLE_HEAD = [
     "Order Reference",
     "Date Created",
-    "Status",
     "Product",
     "Quantity",
     "Unit Price",
@@ -61,23 +60,24 @@ const BuyerOrders = () => {
         result = data; // No filter applied for "All"
       } else if (statusItem === "delivered") {
         result = data.filter(
-          (item) => item.status?.toLowerCase() === "delivered"
+          (item) => (item.status ?? "").toLowerCase() === "delivered"
         );
       } else {
         result = data.filter(
-          (item) => item.status?.toLowerCase() === statusItem.toLowerCase()
+          (item) => (item.status ?? "").toLowerCase() === statusItem.toLowerCase()
         );
       }
-
+    
       // Apply search filter
       if (searchQuery) {
         result = result.filter((item) =>
           item.id.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
-
+    
       setFilteredData(result);
     };
+    
 
     filterResult(tab);
   }, [data, tab, searchQuery]);
@@ -109,9 +109,6 @@ const BuyerOrders = () => {
                   Orders Overview
                 </Typography>
               </div>
-              {/* <div className="flex w-full shrink-0 gap-2 md:w-max">
-                <Button onClick={() => {}}>Add Order</Button>
-              </div> */}
             <div className="flex justify-end m-5">
               <div className="w-full md:w-72">
                 <Input
@@ -145,9 +142,9 @@ const BuyerOrders = () => {
                     </button>
       
                     <button
-                      onClick={() => setTab("Pending")}
+                      onClick={() => setTab("")}
                       className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
-                        tab === "Pending"
+                        tab === ""
                           ? "text-green-500 font-bold border-b-2 border-green-500"
                           : "text-blue-gray"
                       }`}
@@ -210,7 +207,7 @@ const BuyerOrders = () => {
                           return (
                             <tr
                               key={`${order.id}-${item.productID}-${index}`}
-                              onClick={() => handleRowClick(order.orderId)}
+                              onClick={() => handleRowClick(order.id)}
                               className="cursor-pointer hover:bg-gray-200" // Hover effect
                             >
                               {index === 0 && (
@@ -220,7 +217,7 @@ const BuyerOrders = () => {
                                     rowSpan={order.items.length}
                                   >
                                     <Typography variant="small" color="blue-gray">
-                                      {order.orderId}
+                                      {order.id}
                                     </Typography>
                                   </td>
                                   <td
@@ -231,14 +228,7 @@ const BuyerOrders = () => {
                                       {formatDate(order.dateCreated)}
                                     </Typography>
                                   </td>
-                                  <td
-                                    className="p-4 border-b border-blue-gray-200"
-                                    rowSpan={order.items.length}
-                                  >
-                                    <Typography variant="small" color="blue-gray">
-                                      {order.status}
-                                    </Typography>
-                                  </td>
+                      
                                 </>
                               )}
       

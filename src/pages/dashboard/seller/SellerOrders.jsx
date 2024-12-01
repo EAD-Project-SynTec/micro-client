@@ -15,7 +15,6 @@ const SellerOrders = () => {
     "Order Reference",
     "Buyer Email",
     "Date Created",
-    "Status",
     "Product",
     "Quantity",
     "Unit Price",
@@ -44,33 +43,36 @@ const SellerOrders = () => {
   };
 
   useEffect(() => {
-    const filterResult = (statusItem, searchQuery) => {
+    const filterResult = (statusItem) => {
       let result = [];
       if (statusItem === "All") {
-        result = data;
+        result = data; // No filter applied for "All"
+      } else if (statusItem === "delivered") {
+        result = data.filter(
+          (item) => (item.status ?? "").toLowerCase() === "delivered"
+        );
       } else {
         result = data.filter(
-          (item) => item.status?.toLowerCase() === statusItem.toLowerCase()
+          (item) => (item.status ?? "").toLowerCase() === statusItem.toLowerCase()
         );
       }
-
-      // Filter by search query (Order Reference or User ID)
+    
+      // Apply search filter
       if (searchQuery) {
-        result = result.filter(
-          (item) =>
-            item.id.toLowerCase().includes(searchQuery.toLowerCase()) || // Filter by Order ID
-            item.userId.toLowerCase().includes(searchQuery.toLowerCase()) // Filter by User ID
+        result = result.filter((item) =>
+          item.id.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
-
+    
       setFilteredData(result);
     };
+    
 
-    filterResult(tab, searchQuery); // Apply filter based on status and search query
-  }, [data, tab, searchQuery]); // Add searchQuery to dependency array
+    filterResult(tab, searchQuery); 
+  }, [data, tab, searchQuery]); 
 
   const handleRowClick = (id) => {
-    navigate(`/seller/orders/${id}`);
+    navigate(`/dashboard/orders-details/${id}`);
   };
 
   const formatDate = (dateString) => {
@@ -129,9 +131,9 @@ const SellerOrders = () => {
                   </button>
 
                   <button
-                    onClick={() => setTab("Pending")}
+                    onClick={() => setTab("")}
                     className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
-                      tab === "Ready to pickup"
+                      tab === ""
                         ? "text-green-500 font-bold border-b-2 border-green-500"
                         : "text-blue-gray"
                     }`}
@@ -142,7 +144,7 @@ const SellerOrders = () => {
                   <button
                     onClick={() => setTab("Processing")}
                     className={`focus:outline-none sm:w-40 w-24 transition duration-300 ease-in-out ${
-                      tab === "Picked up"
+                      tab === "Processing"
                         ? "text-green-500 font-bold border-b-2 border-green-500"
                         : "text-blue-gray"
                     }`}
@@ -194,7 +196,7 @@ const SellerOrders = () => {
                         return (
                           <tr
                             key={`${order.id}-${item.productID}-${index}`}
-                            onClick={() => handleRowClick(order.orderId)}
+                            onClick={() => handleRowClick(order.id)}
                             className="cursor-pointer hover:bg-gray-200" // Hover effect
                           >
                             {index === 0 && (
@@ -204,7 +206,7 @@ const SellerOrders = () => {
                                   rowSpan={order.items.length}
                                 >
                                   <Typography variant="small" color="blue-gray">
-                                    {order.orderId}
+                                    {order.id}
                                   </Typography>
                                 </td>
                                 <td
@@ -221,14 +223,6 @@ const SellerOrders = () => {
                                 >
                                   <Typography variant="small" color="blue-gray">
                                     {formatDate(order.dateCreated)}
-                                  </Typography>
-                                </td>
-                                <td
-                                  className="p-4 border-b border-blue-gray-200"
-                                  rowSpan={order.items.length}
-                                >
-                                  <Typography variant="small" color="blue-gray">
-                                    {order.status}
                                   </Typography>
                                 </td>
                               </>
@@ -255,7 +249,7 @@ const SellerOrders = () => {
                                 rowSpan={order.items.length}
                               >
                                 <Typography variant="small" color="blue-gray">
-                                  ${calculateTotalPrice(order.items)}
+                                  Rs.{calculateTotalPrice(order.items)}
                                 </Typography>
                               </td>
                             )}

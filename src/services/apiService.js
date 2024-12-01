@@ -122,8 +122,8 @@ const AuthService = {
       },
     forgetPwd: async(email) => {
       try{
-        const response = await axios.post(`${BASE_URL}/Auth/forgot-password`, email);
-        return response.data;
+        const response = await axios.put(`${BASE_URL}/api/user/auth/password/${email}`);
+        return response;
       }
       catch(error){
         throw error.response.data;

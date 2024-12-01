@@ -67,7 +67,7 @@ export default function AddToCart() {
 
         // Replace with dynamic email if needed
 
-        const userId = getUsername(); // Replace with dynamic email if needed
+        // const userId = getUsername(); // Replace with dynamic email if needed
 
         const data = await CartServices.getCart(userId);
         

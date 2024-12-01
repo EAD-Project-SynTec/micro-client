@@ -13,22 +13,16 @@ export default function signup() {
   const [confmpwd, setConfmpwd]=useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
-  const [NIC, setNIC] = useState("");
-  const [isnicValid, setIsnicValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [profileImg, setprofileImg]=useState(null);
   const fnameRef=useRef(null);
   const lnameRef=useRef(null);
-  const roleRef = useRef();
   const emailRef=useRef(null);
   const pwdRef=useRef(null);
-  const nicRef=useRef(null);
   const phoneRef=useRef(null);
   const add1Ref=useRef(null);
   const add2Ref=useRef(null);
   const add3Ref=useRef(null);
-  const imgInputRef=useRef(null);
+
 
   // Validating Phone number ------------------------
 
@@ -36,34 +30,6 @@ export default function signup() {
     const phoneNumberRegex = /^[0-9]{10}$/;
     return phoneNumberRegex.test(number);
   };
-
-  // Validating NIC -------------------------
-
-  const validateNIC = (nic) => {
-    const nicRegex = /^[0-9]{12}$/;
-    return nicRegex.test(nic);
-  };
-  
-  // Handling Images ----------------------------
-
-  const handleProfileImg=(e)=>{
-    const file=e.target.files[0];
-    console.log(file);
-    setprofileImg(e.target.files[0]);
-  }
-
-  const handleDrag=(e)=>{
-    e.preventDefault();
-    setIsDragging(true);
-  }
-  const handleDrop=(e)=>{
-    e.preventDefault();
-    const file=e.dataTransfer.files[0];
-    if (file.type.startsWith('image/')) {
-        setprofileImg(e.dataTransfer.files[0]);
-        console.log(file);
-    } 
-  }
 
   // Function for handle form submission ------------------------
 
@@ -78,21 +44,14 @@ export default function signup() {
         ErrorAlert({ message: "Please make sure your passwords are match" });
         return;
     }
-    if (!isnicValid) {
-        ErrorAlert({ message: "Please enter valid NIC number" });
-        return;
-    }
+   
     if (!isPhoneNumberValid) {
         ErrorAlert({ message: "Please enter valid phone number" });
         return;
     }
-    if (profileImg==null) {
-        ErrorAlert({ message: "Please upload a profile photo" });
-        return;
-    }
 
     var formData = {
-        role: roleRef.current.value,
+        role:'buyer',
         password: pwdRef.current.value,
         firstName: fnameRef.current.value,
         lastName: lnameRef.current.value,
@@ -206,28 +165,7 @@ export default function signup() {
                     </div>
                 </div>
                 
-                <div className="py-6 border-b border-gray-100 dark:border-gray-800">
-                    <div className="w-full md:w-9/12">
-                        <div className="flex flex-wrap -m-3">
-                            <FormLabel>NIC number</FormLabel>
-                            <div className="w-full p-3 md:flex-1">
-                                <input
-                                    className="w-full px-4 py-2.5 dark:bg-gray-800 dark:border-gray-800 dark:placeholder-gray-500 dark:text-gray-400  text-base text-gray-900 rounded-lg font-normal border border-gray-200"
-                                    type="text" placeholder="197419202757" required ref={nicRef}
-                                    onChange={(e) => {
-                                        const number = e.target.value;
-                                        setNIC(number);
-                                        setIsnicValid(validateNIC(number));
-                                    }}/>
-                                {(NIC!="" && !isnicValid) && 
-                                    <p className="mt-4 flex text-base font-semibold text-red-400 dark:text-gray-400">
-                                        <MdOutlineErrorOutline size={20}/> &nbsp;Please enter a valid NIC number.
-                                    </p>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               
                 <div className="py-6 border-b border-gray-100 dark:border-gray-800">
                     <div className="w-full md:w-9/12">
                         <div className="flex flex-wrap -m-3">
@@ -251,25 +189,7 @@ export default function signup() {
                     </div>
                 </div>
                  
-                <div className="py-6 border-b border-gray-100 dark:border-gray-800">
-                    <div className="w-full md:w-9/12">
-                        <div className="flex flex-wrap -m-3">
-                            <FormLabel>Select Who are you</FormLabel>
-                            <div className="w-full p-3 md:flex-1">
-        <select
-          className="w-full px-4 py-2.5 dark:bg-gray-800 dark:border-gray-800 dark:placeholder-gray-500 dark:text-gray-400 text-base text-gray-900 rounded-lg font-normal border border-gray-200"
-          required
-          ref={roleRef}
-        >
-          <option value="">Select your role</option>
-          <option value="buyer">buyer</option>
-          <option value="courier">courier</option>
-        </select>
-      </div>
-                        </div>
-                    </div>
-                </div>
-
+              
 
                 <div className="py-6 border-b border-gray-100 dark:border-gray-800">
                     <div className="w-full md:w-9/12">
@@ -307,52 +227,9 @@ export default function signup() {
                         </div>
                     </div>
                 </div>
-                <div className="py-6 border-b border-gray-100 dark:border-gray-800">
-                    <div className="w-full md:w-9/12">
-                        <div className="flex flex-wrap -m-3">
-                            <div className="w-full p-3 md:w-1/3">
-                                <p className="text-base font-semibold text-gray-700 dark:text-gray-400">Profile photo</p>
-                            </div>
-                            <div className="w-full p-3 md:flex-1">
-                                <div className="flex items-center justify-center w-full">
-                                    <label for="dropzone-file"  onDragOver={handleDrag} onDrop={handleDrop} 
-                                        className="flex flex-col items-center justify-center w-full h-64 bg-white border-2 border-gray-200 border-dashed rounded-lg dark:bg-gray-800 dark:hover:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 ">
-                                        {!profileImg && 
-                                          <div onClick={() => imgInputRef.current.click()} className="flex flex-col items-center justify-center px-4 pt-5 pb-6 cursor-pointer">
-                                              <span className="text-primary dark:text-gray-400">
-                                                  <IoCloudUploadOutline size={28} />
-                                              </span>
-                                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                  <span className="font-semibold text-primary" role='button'>Click to upload</span> or drag
-                                                  and drop
-                                              </p>
-                                              <input type='file' accept='image/*' hidden onChange={handleProfileImg} ref={imgInputRef}/>
-                                              <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                any type of image
-                                              </p>
-                                          </div>
-                                        }
-                                        {
-                                          profileImg &&
-                                            <div className='w-32 absolute'>
-                                                <span role='button' onClick={()=>setprofileImg(null)} className='absolute top-0 right-0 text-5xl text-red-500 -mt-6 -mr-3 drop-shadow-lg'>&times;</span>
-                                                <img className='w-auto h-auto' src={(URL.createObjectURL(profileImg))}/>
-                                              
-                                            </div>
-                                        }
-                                    </label>
-                                  
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
                 <div className="flex pt-6 flex-wrap -m-1.5">
-                    <div className="w-full md:w-auto p-1.5">
-                        <input type='reset' value="Clear"
-                            className="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium hover:cursor-pointer text-black-200 bg-gray-200 border border-gray-200 rounded-md hover:border-gray-300 hover:bg-gray-300 active:shadow-xl active:ring-2 active:ring-gray-300" onClick={()=>setprofileImg(null)}>
-                        </input>
-                    </div>
+                   
                     <div className="w-full md:w-auto p-1.5">
                         <input type='submit' value={isLoading==false?"Sign In":"Signing..."}
                             className="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-white bg-green-500 border border-primary rounded-md hover:bg-green-800 active:ring-2 active:ring-green-800 active:shadow-xl disabled:cursor-not-allowed" disabled={isLoading}>

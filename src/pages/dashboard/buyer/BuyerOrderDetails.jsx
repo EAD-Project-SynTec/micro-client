@@ -16,6 +16,8 @@ import {
   Rating,
 } from "@material-tailwind/react";
 import MainNav from "@/pages/user/components/MainNav";
+import {getDecodedToken,hasRole} from "../../../services/authService"
+import { useNavigate } from "react-router-dom";
 
 const BuyerOrderDetails = () => {
   const { orderId } = useParams();
@@ -25,12 +27,26 @@ const BuyerOrderDetails = () => {
   const [currentItem, setCurrentItem] = useState(null);
   const [rating, setRating] = useState(0);
   const [reviewMessage, setReviewMessage] = useState("");
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
+
+        const decodedToken = getDecodedToken();
+        if (decodedToken) {
+            const hasDefaultRole = hasRole(decodedToken, 'buyer');
+            console.log('user is :', hasDefaultRole);
+            if(!hasDefaultRole){
+              navigate('/login');
+            }
+        }else{
+          navigate('/login');
+        } 
         const response = await getOrderDetails(orderId);
         setOrderDetails(response.data);
+
       } catch (err) {
         console.error(err);
         setError("Failed to fetch order details.");
@@ -39,6 +55,8 @@ const BuyerOrderDetails = () => {
 
     fetchOrderDetails();
   }, [orderId]);
+
+
 
   const openReviewDialog = (item) => {
     setCurrentItem(item);

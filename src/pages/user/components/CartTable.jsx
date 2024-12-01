@@ -9,6 +9,7 @@ import { useCart } from "../cartProvider";
 import CartServices from "@/services/cartServices";
 
 const TABLE_HEAD = ["Item", "Price", "Qty", "Sub Total", ""];   
+
 export function CartTable({ cartItems,cartEmail,setCartUpdate}) {
   const[cartItemss, setCartItems] = useState([]);
   const { setCartCount } = useCart();

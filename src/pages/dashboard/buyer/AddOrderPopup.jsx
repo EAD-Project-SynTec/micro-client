@@ -8,6 +8,7 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
+import {getUsername} from "../../../services/authService"
 
 const AddOrderPopup = ({ onClose, productId }) => {
   const [productDetails, setProductDetails] = useState(null);
@@ -48,7 +49,7 @@ const AddOrderPopup = ({ onClose, productId }) => {
     }
 
     const orderData = {
-      userId: "kavin@gmail.com", //Add the dynamic id here
+      userId: getUsername(), //Add the dynamic id here
       address,
       dateCreated: orderDate,
       items: [

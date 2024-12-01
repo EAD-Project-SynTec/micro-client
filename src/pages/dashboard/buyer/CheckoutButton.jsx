@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CheckoutPopUp from "./CheckOutPopup";
 import Button from '@mui/material/Button';
+import {getUsername} from "../../../services/authService"
 
 const CheckoutButton = ({orderTotal}) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -17,7 +18,7 @@ const CheckoutButton = ({orderTotal}) => {
       {showPopup && (
         <CheckoutPopUp
           onClose={() => setShowPopup(false)}
-          userId={"kwalskinick@gmail.com"} // Pass the user ID here
+          userId={getUsername()} // Pass the user ID here
           orderTotal={orderTotal}
         />
       )}

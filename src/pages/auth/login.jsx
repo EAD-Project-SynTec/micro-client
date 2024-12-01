@@ -36,18 +36,18 @@ function Login(){
             setLogError(false);
             const token = sessionStorage.getItem('jwtToken');
             const decodedData = jwtDecode(token);
-            console.log(decodedData.email)
+            console.log(decodedData)
             console.log(decodedData.resource_access.EADclient.roles[0])
             setIsLoading(false);
             console.log("Role: ", decodedData.resource_access.EADclient.roles[0]);
-            if(decodedData.resource_access.EADclient.roles[0]=="courier"){
-                navigate('/couriers/new-orders');
-            }
+            // if(decodedData.resource_access.EADclient.roles[0]=="courier"){
+            //     navigate('/couriers/new-orders');
+            // }
             if(decodedData.resource_access.EADclient.roles[0]=="seller"){
                 navigate('/dashboard/my-products');
             }
             if(decodedData.resource_access.EADclient.roles[0]=="buyer"){
-                navigate('/dashboard/my-products');
+                navigate('/buyer/orders');
             }
         }
         catch (error){

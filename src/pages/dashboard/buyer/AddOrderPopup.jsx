@@ -37,13 +37,18 @@ const AddOrderPopup = ({ onClose, productId }) => {
   }, []);
 
   const handleSubmit = async () => {
-    if (!address || !productDetails) {
-      setError("Address and product details are required.");
+    if (!address || !quantity || quantity <= 0) {
+      Swal.fire({
+        title: "Warning",
+        text: "Please provide a valid address and quantity.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
       return;
     }
-  
+    
     const orderData = {
-      userId: "kavin@gmail.com",
+      userId: "kavin@gmail.com", //Add the dynamic id here
       address,
       dateCreated: orderDate,
       items: [
@@ -88,7 +93,7 @@ const AddOrderPopup = ({ onClose, productId }) => {
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
-      <h2 className="mb-5 text-2xl text-green-400 font-semibold">
+      <h2 className="mb-5 text-2xl text-green-500 font-semibold">
   Place Order
 </h2>
         {productDetails ? (

@@ -36,7 +36,7 @@ function Login(){
             setLogError(false);
             const token = sessionStorage.getItem('jwtToken');
             const decodedData = jwtDecode(token);
-            console.log(decodedData.email)
+            console.log(decodedData)
             console.log(decodedData.resource_access.EADclient.roles[0])
             setIsLoading(false);
             console.log("Role: ", decodedData.resource_access.EADclient.roles[0]);

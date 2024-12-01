@@ -46,7 +46,7 @@ const AddOrderPopup = ({ onClose, productId }) => {
       });
       return;
     }
-    
+
     const orderData = {
       userId: "kavin@gmail.com", //Add the dynamic id here
       address,
@@ -56,6 +56,7 @@ const AddOrderPopup = ({ onClose, productId }) => {
           productID: productDetails.id,
           quantity: quantity,
           price: productDetails.price,
+          productName: productDetails.name
         },
       ],
     };

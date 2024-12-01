@@ -47,7 +47,7 @@ function Login(){
                 navigate('/dashboard/my-products');
             }
             if(decodedData.resource_access.EADclient.roles[0]=="buyer"){
-                navigate('/buyer/orders');
+                navigate('/products');
             }
         }
         catch (error){

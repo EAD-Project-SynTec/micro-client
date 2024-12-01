@@ -4,31 +4,44 @@ import { HomeIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import SearchBar from "./SearchBar";
 import { Link, useNavigate } from "react-router-dom";
 import MainNavSide from "./MainNavSide";
-import {  getSearchProducts } from "../services/productServices";
+import { getSearchProducts } from "../services/productServices";
 import UserDropdown from "./UserDropdown";
 import logoImg from "../../../../public/img/log_img.png";
 import { jwtDecode } from "jwt-decode";
-import  { useCart } from "../cartProvider";
+import { useCart } from "../cartProvider";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
-const MainNav = ({ getSearchResults,cartTotal }) => {
+const MainNav = ({ getSearchResults, cartTotal }) => {
   const navigate = useNavigate();
   // const [cartCount, setCartCount] = useState(0);
-  const [userName, setUserName] = useState('');
-  const [buyerID, setBuyerID] = useState('');
+  const [userName, setUserName] = useState("");
+  const [buyerID, setBuyerID] = useState("");
   const [isUserLogged, setIsUserLogged] = useState(false);
-  const email = "kwalskinick@gmail.com"; 
+  const email = "kwalskinick@gmail.com";
   const { cartCount } = useCart();
+  const [isLogin, setIsLogin] = useState(false);
+  useEffect(() => {
+    const token = sessionStorage.getItem("jwtToken");
+    if (token) {
+      setIsLogin(true);
+    }
+  });
+
+  const handleSignOut = () => {
+    sessionStorage.removeItem("jwtToken"); // Remove JWT token from session storage
+    navigate("/login"); // Redirect to login page
+  };
   // const getCartTotal = () => {
   //   return localStorage.getItem('cartTotal') || 0;
   // }
   // Usage example in another component:
-// const [cartNumber, setCartNumber] = useState(getCartTotal());
+  // const [cartNumber, setCartNumber] = useState(getCartTotal());
 
-// To keep it in sync, use useEffect
-// useEffect(() => {
-//   const total = getCartTotal();
-//   setCartNumber(total);
-// }, [cartTotal]); // Add dependencies if needed
+  // To keep it in sync, use useEffect
+  // useEffect(() => {
+  //   const total = getCartTotal();
+  //   setCartNumber(total);
+  // }, [cartTotal]); // Add dependencies if needed
 
   // const cartNumber = cartTotal?cartTotal:0;
   // useEffect(() => {
@@ -50,16 +63,15 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
 
   const handleSearch = async (searchTerm) => {
     try {
-      console.log()
+      console.log();
       // Fetch search results
       navigate(`/products?search=${searchTerm}`);
       const results = await getSearchProducts(searchTerm);
       // Pass search results to ProductList
       getSearchResults(results);
       // Navigate to /products with search term as query param
-
     } catch (error) {
-      console.error('Error fetching search results:', error);
+      console.error("Error fetching search results:", error);
     }
   };
 
@@ -76,17 +88,29 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
   //   fetchCartItems();
   // }, [buyerID]);
 
-  const handleOrders =  async ()=>{
-    const token = sessionStorage.getItem('jwtToken');
-    const decodedData= jwtDecode(token);
-    const role = decodedData.resource_access.EADclient.roles[0];
-    if(role == "buyer"){
-      navigate('/buyer/orders');
+  const handleOrders = async () => {
+    const token = sessionStorage.getItem("jwtToken");
+    if (!token) {
+      navigate("/login");
+      return;
     }
-    if(role == "seller"){
-      navigate('/dashboard/my-orders');
+
+    try {
+      const decodedData = jwtDecode(token);
+      const role = decodedData.resource_access?.EADclient?.roles?.[0];
+
+      if (role === "buyer") {
+        navigate("/buyer/orders");
+      } else if (role === "seller") {
+        navigate("/dashboard/my-orders");
+      } else {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      navigate("/login");
     }
-  }
+  };
 
   return (
     <>
@@ -95,11 +119,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
           {/* image */}
           <div className="w-50 max-w-full px-8 ">
             <a href="/#" className="block w-full">
-              <img
-                src={logoImg}
-                alt="logo"
-                className="dark:hidden"
-              />
+              <img src={logoImg} alt="logo" className="dark:hidden" />
             </a>
           </div>
         </div>
@@ -113,7 +133,12 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
                 <ul className="block lg:flex items-start text-sm">
                   <ListItem NavLink="/#">Home</ListItem>
                   <ListItem NavLink="/#">About</ListItem>
-                  <ListItem  onClick={handleOrders}>My Orders</ListItem>
+                  <ListItem>
+                    {" "}
+                    <a href="" onClick={handleOrders}>
+                      My Orders
+                    </a>
+                  </ListItem>
                   <ListItem NavLink="/#">Offers</ListItem>
                 </ul>
               </div>
@@ -124,44 +149,53 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
                 <SearchBar onSearch={handleSearch} />
                 <div className="hidden justify-end pr-16 gap-3 sm:flex lg:pr-0 items-center ">
                   <Badge content={cartCount} color="green" className="mx-3">
-
-                    <IconButton color="gray" variant="outlined" className="rounded-full"
+                    <IconButton
+                      color="gray"
+                      variant="outlined"
+                      className="rounded-full"
                       onClick={() => navigate("/cart")}
                     >
                       <ShoppingCartIcon className="h-3 w-3" />
                     </IconButton>
                   </Badge>
-                  {
-                    isUserLogged ?
-                      <>
-                        <div className="w-28 flex items-center">
-                          <UserDropdown userName={userName} />
-                        </div>
-                      </>
-                      :
-                      <>
-                        <div className="flex gap-3">
-                          <Link to={"/login"} className='bg-transparent border-green-500 border rounded-full inline-flex items-center 
+                  {isLogin ? (
+                    <>
+                    <a
+  onClick={handleSignOut} // Attach the sign-out handler
+  className="flex items-center gap-2 px-1 py-1 text-sm font-medium text-white hover:bg-green-500 rounded-lg shadow-md bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-200"
+>
+  <UserCircleIcon className="h-8 w-8 text-white" />
+  Sign Out
+</a>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex gap-3">
+                        <Link
+                          to={"/login"}
+                          className="bg-transparent border-green-500 border rounded-full inline-flex items-center 
                                         justify-center py-2 px-8 text-center text-sm font-medium  text-green-500
-                                        disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'>
-                            Login
-                          </Link>
-                        
-                          <Link to={"/create"} className='bg-green-500 border-primary border w-full rounded-full inline-flex items-center 
+                                        disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5"
+                        >
+                          Login
+                        </Link>
+
+                        <Link
+                          to={"/create"}
+                          className="bg-green-500 border-primary border w-full rounded-full inline-flex items-center 
                                         justify-center py-2 px-7 text-center text-sm font-medium   text-white hover:bg-primary/90
-                                        disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5'>
-                            SignUp
-                          </Link>
-                        </div>
-                      </>
-                  }
+                                        disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5"
+                        >
+                          SignUp
+                        </Link>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-
           </div>
         </div>
-
       </div>
     </>
   );

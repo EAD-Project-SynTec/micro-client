@@ -9,6 +9,7 @@ import UserDropdown from "./UserDropdown";
 import logoImg from "../../../../public/img/log_img.png";
 import { jwtDecode } from "jwt-decode";
 import  { useCart } from "../cartProvider";
+import { getUsername } from "@/services/authService";
 
 const MainNav = ({ getSearchResults,cartTotal }) => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
   const [userName, setUserName] = useState('');
   const [buyerID, setBuyerID] = useState('');
   const [isUserLogged, setIsUserLogged] = useState(false);
-  const email = "kwalskinick@gmail.com"; 
+  const email = getUsername(); 
   const { cartCount } = useCart();
   // const getCartTotal = () => {
   //   return localStorage.getItem('cartTotal') || 0;
@@ -76,6 +77,18 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
   //   fetchCartItems();
   // }, [buyerID]);
 
+  const handleOrders =  async ()=>{
+    const token = sessionStorage.getItem('jwtToken');
+    const decodedData= jwtDecode(token);
+    const role = decodedData.resource_access.EADclient.roles[0];
+    if(role == "buyer"){
+      navigate('/buyer/orders');
+    }
+    if(role == "seller"){
+      navigate('/dashboard/my-orders');
+    }
+  }
+
   return (
     <>
       <div className=" md:grid grid-cols-4 gap-0 px-4 py-2">
@@ -101,7 +114,7 @@ const MainNav = ({ getSearchResults,cartTotal }) => {
                 <ul className="block lg:flex items-start text-sm">
                   <ListItem NavLink="/#">Home</ListItem>
                   <ListItem NavLink="/#">About</ListItem>
-                  <ListItem NavLink="/dashboard">My Orders</ListItem>
+                  <ListItem  onClick={handleOrders}>My Orders</ListItem>
                   <ListItem NavLink="/#">Offers</ListItem>
                 </ul>
               </div>

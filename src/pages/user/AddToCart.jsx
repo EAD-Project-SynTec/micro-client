@@ -10,33 +10,65 @@ import {Alert} from "@material-tailwind/react";
 import { Link } from 'react-router-dom';
 import { Icon } from '@mui/material';
 import CheckoutCard from './components/CheckoutCard';
+
 import CartServices from '@/services/cartServices';
 import {getDecodedToken,hasRole} from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
+import {getUsername} from "../../services/authService"
 
 
 export default function AddToCart() {
 
     const [cartItems, setCartItems] = useState([]);
-    const [buyerID, setBuyerID] = useState('kwalskinick@gmail.com');
+    //const [buyerID, setBuyerID] = useState('kwalskinick@gmail.com');
     const [open, setOpen] = useState(false);
     const [successOrder, setSuccessOrder] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [cartData, setCartData] = useState([]);
     const [cartEmail, setCartEmail] = useState('');
+
+    
     const [cartUpdate, setCartUpdate] = useState(0);
     const [cartTotal, setCartTotal] = useState(0);
   //retrieve cart items and buyer user id from the database
   const navigate = useNavigate();
 
+  //setBuyerID(getUsername());
 
-
+  const buyerID = getUsername();
+  
   useEffect(() => {
     const getCart = async () => {
       setLoading(true);
       try {
-        const userId = "kwalskinick@gmail.com"; // Replace with dynamic email if needed
+
+
+        const token = sessionStorage.getItem('jwtToken');
+            const decodedData = jwtDecode(token);
+
+        const userId = decodedData.email; // Replace with dynamic email if needed
+
+        // Sending a GET request to retrieve cart data
+        const response = await axios.get(
+          `http://localhost:8084/api/v1/cart?email=${userId}`, // Updated API endpoint with query parameter
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((response) => {
+          // console.log(response.data.orderItems);
+          console.log(response.data.cartItems);
+          setCartEmail(userId);
+          setCartData(response.data.cartItems); // Set the cart data if successful
+          setSuccessOrder(true);
+        });
+
+        // Replace with dynamic email if needed
+
+        const userId = getUsername(); // Replace with dynamic email if needed
+
         const data = await CartServices.getCart(userId);
         
         console.log(data.cartItems.length);
@@ -52,7 +84,6 @@ export default function AddToCart() {
     };
     getCart();
  
-
             // // Retrieve and decode JWT token
             const decodedToken = getDecodedToken();
             if (decodedToken) {

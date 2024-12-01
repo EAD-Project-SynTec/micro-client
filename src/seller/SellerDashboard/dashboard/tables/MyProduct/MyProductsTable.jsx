@@ -9,11 +9,14 @@ import Swal from 'sweetalert2'
 import { Card, CardHeader,Typography,Button,CardBody,CardFooter,Avatar,IconButton,Tooltip,} from "@material-tailwind/react";
 import { deleteProduct, getProductsBySellerID } from '@/services/productServices';
 import { jwtDecode } from 'jwt-decode';
+import { SpinnerColors } from '@/components/Spinner';
 const TABLE_HEAD = ["Product", "Product Number", "Date Created", "Unit Price", "Stock", "Minimum Order", "", ""];
+
 
 const MyProductsTable = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [loading,setloading] = useState(false);
   const  PopupHandler = (id) =>{
     Swal.fire({
       title: "Are you sure?",
@@ -45,8 +48,10 @@ const MyProductsTable = () => {
         const decodedData = jwtDecode(token);
         const sellerID = decodedData.email;
     try {
+      setloading(true);
       const productData = await getProductsBySellerID(sellerID);
       setProducts(productData);
+      setloading(false);
     } catch (error) {
       console.error('Error fetching cart details:', error);
     }
@@ -61,7 +66,7 @@ const MyProductsTable = () => {
   }, []);
   return (
     <div>
-
+        
       {/* Header card */}
       <Card className="h-full w-full mt-4">
         <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -86,6 +91,7 @@ const MyProductsTable = () => {
           </div>
 
         </CardHeader>
+       
         <CardBody className="overflow-scroll px-0">
           <table className="mt-4 w-full min-w-max table-auto text-left">
             <thead>
@@ -106,6 +112,7 @@ const MyProductsTable = () => {
                 ))}
               </tr>
             </thead>
+            
             <tbody>
               {products.map((p, index) => {
                 const key = p.productID || index;

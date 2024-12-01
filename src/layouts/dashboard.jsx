@@ -56,7 +56,7 @@ export function Dashboard() {
         <Route path="/update-product/:id" element={<ProductUpdate />}>
           {" "}
         </Route>
-        <Route path="/order-details/:orderId" element={<SellerOrderDetails />}>
+        <Route path="/orders-details/:orderId" element={<SellerOrderDetails />}>
           {" "}
         </Route>
         </Routes>

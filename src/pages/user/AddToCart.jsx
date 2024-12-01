@@ -14,6 +14,7 @@ import CartServices from '@/services/cartServices';
 import {getDecodedToken,hasRole} from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function AddToCart() {
 
     const [cartItems, setCartItems] = useState([]);
@@ -53,13 +54,16 @@ export default function AddToCart() {
  
 
             // // Retrieve and decode JWT token
-            // const decodedToken = getDecodedToken();
-            // if (decodedToken) {
-            //     const hasDefaultRole = hasRole(decodedToken, 'default-roles-ead-microservice-user');
-            //     console.log('Has default-roles-ead-microservice-user:', hasDefaultRole);
-            // }else{
-            //   navigate('/login');
-            // } 
+            const decodedToken = getDecodedToken();
+            if (decodedToken) {
+                const hasDefaultRole = hasRole(decodedToken, 'buyer');
+                console.log('user is :', hasDefaultRole);
+                if(!hasDefaultRole){
+                  navigate('/login');
+                }
+            }else{
+              navigate('/login');
+            } 
   }, [cartUpdate]); 
 
 

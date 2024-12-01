@@ -15,6 +15,7 @@ import UpdateProduct from "../pages/dashboard/UpdateProduct";
 import ReturnProductDetails from "@/seller/SellerDashboard/dashboard/components/reviews/ReturnProductDetails";
 import Review from "@/seller/SellerDashboard/dashboard/Review";
 import ProductUpdate from "@/pages/dashboard/UpdateProduct";
+import SellerOrderDetails from "@/pages/dashboard/seller/SellerOrderDetails";
 const Routing = () => {
   return (
     <>
@@ -57,7 +58,11 @@ const Routing = () => {
         <Route path="/update-product/:id" element={<ProductUpdate />}>
           {" "}
         </Route>
-        <Route path="my-orders/:orderID" element={<OrderDetails />}></Route>
+        <Route path="/orders-details/:orderId" element={<SellerOrderDetails/>}>
+          {" "}
+        </Route>
+
+  
        
       </Routes>
     </>

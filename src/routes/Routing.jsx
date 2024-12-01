@@ -58,7 +58,7 @@ const Routing = () => {
         <Route path="/update-product/:id" element={<ProductUpdate />}>
           {" "}
         </Route>
-        <Route path="/orders-details/:orderId" element={<SellerOrderDetails/>}>
+        <Route path="/orders-details/:id" element={<SellerOrderDetails/>}>
           {" "}
         </Route>
 

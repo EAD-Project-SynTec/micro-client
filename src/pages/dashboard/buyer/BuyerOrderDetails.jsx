@@ -90,23 +90,26 @@ const BuyerOrderDetails = () => {
 
   const renderStatusTracker = (status) => {
     const steps = ["Pending", "Processing", "Delivered"];
+  
+    // Normalize the status, treat null or undefined as "Pending"
+    const normalizedStatus =
+      typeof status === "string" && status.trim() !== "" ? status.toLowerCase() : "pending";
+  
+    // Determine the current step index; default to -1 if status is invalid
     const currentStep = steps.findIndex(
-      (step) => step.toLowerCase() === status.toLowerCase()
+      (step) => step.toLowerCase() === normalizedStatus
     );
-
+  
     return (
       <div className="mb-6">
+        {/* Status Labels */}
         <div className="flex justify-start mb-2">
           {steps.map((step, index) => (
-            <div
-              key={step}
-              className="text-left flex-1"
-              style={{ minWidth: "100px" }}
-            >
+            <div key={step} className="text-left flex-1" style={{ minWidth: "100px" }}>
               <Typography
                 variant="small"
                 className={`font-bold ${
-                  index <= currentStep ? "text-green-500" : "text-gray-500"
+                  index <= currentStep && currentStep >= 0 ? "text-green-500" : "text-gray-500"
                 }`}
               >
                 {step}
@@ -114,20 +117,25 @@ const BuyerOrderDetails = () => {
             </div>
           ))}
         </div>
+  
+        {/* Progress Tracker */}
         <div className="flex items-center justify-between">
           {steps.map((step, index) => (
             <div key={step} className="flex items-center w-full">
+              {/* Step Circle */}
               <div
                 className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-bold ${
-                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                  index <= currentStep && currentStep >= 0 ? "bg-green-500" : "bg-gray-300"
                 }`}
               >
                 {index + 1}
               </div>
+  
+              {/* Connector */}
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 ${
-                    index < currentStep ? "bg-green-500" : "bg-gray-300"
+                    index < currentStep && currentStep >= 0 ? "bg-green-500" : "bg-gray-300"
                   }`}
                 ></div>
               )}
@@ -137,6 +145,7 @@ const BuyerOrderDetails = () => {
       </div>
     );
   };
+  
 
   if (error) {
     return <Typography color="red">{error}</Typography>;
@@ -211,13 +220,23 @@ const BuyerOrderDetails = () => {
                     </Typography>
                     <Button
                       variant="gradient"
-                      disabled={orderDetails.status.toLowerCase() !== "delivered"}
+                      disabled={
+                        orderDetails.status && typeof orderDetails.status === "string"
+                          ? orderDetails.status.toLowerCase() !== "delivered"
+                          : true
+                      }
                       className="w-full"
-                      color={orderDetails.status.toLowerCase() === "delivered" ? "green" : "gray"}
+                      color={
+                        orderDetails.status && typeof orderDetails.status === "string" &&
+                        orderDetails.status.toLowerCase() === "delivered"
+                          ? "green"
+                          : "gray"
+                      }
                       onClick={() => openReviewDialog(item)}
                     >
                       Add Review
                     </Button>
+
                   </CardBody>
                 </Card>
               ))}

@@ -55,3 +55,19 @@ export const hasRole = (decodedToken, role) => {
   const roles = decodedToken?.resource_access?.EADclient?.roles || [];
   return roles.includes(role);
 };
+
+export const getUsername = () => {
+  try {
+    const decodedToken = getDecodedToken();
+    if (decodedToken && decodedToken.email) {
+      console.log('Email:', decodedToken.email);
+      return decodedToken.email;
+    } else {
+      console.log('No email found in token');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting email from token:', error);
+    return null;
+  }
+};

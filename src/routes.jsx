@@ -31,32 +31,10 @@ export const routes = [
         path: "/my-orders",
         element: <MyOrders />,
       },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "My Reviews",
-        path: "/my-reviews",
-        element: <MyReviews />,
-      },
     ],
   },
-  {
-    title: "auth pages",
-    layout: "auth",
-    pages: [
-      {
-        icon: <ServerStackIcon {...icon} />,
-        name: "sign in",
-        path: "/sign-in",
-        element: <SignIn />,
-      },
-      {
-        icon: <RectangleStackIcon {...icon} />,
-        name: "sign up",
-        path: "/sign-up",
-        element: <SignUp />,
-      },
-    ],
-  },
+  
+
 ];
 
 export default routes;
